@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using eduLib.Application.Auth;        // Agar kenal AuthService (Azka)
 using eduLib.Application.Tracking;    // Agar kenal ReadingStateMachine & BookmarkManager (Tegar)
-using eduLib.Infrastructure.Viewer;  // Agar kenal PdfMetadataReader (Raka)
 using eduLib.Core.Entities;           // Agar kenal kelas User & Book
 using eduLib.Core.Enums;              // Agar kenal Role
 using System.IO;
@@ -54,14 +53,13 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Upload Sukses", BookId = bookId });
         }
 
-        // [GET] /api/books/download/{gridFsId}
-        // Dipakai browser / Postman untuk fitur FR-06 (Unduh)
         [HttpGet("download/{gridFsId}")]
         public async Task<IActionResult> DownloadBookPdf(string gridFsId)
         {
             try
             {
                 var fileBytes = await _repo.DownloadPdfAsync(gridFsId);
+                // ADA parameter nama file ("downloaded_book.pdf") -> Browser akan MENGUNDUH file
                 return File(fileBytes, "application/pdf", "downloaded_book.pdf");
             }
             catch
@@ -70,13 +68,19 @@ namespace eduLib.API.Controllers
             }
         }
 
-        // --- FITUR RAKA (Anggota 4): Download & Metadata ---
-        [HttpGet("metadata/{fileName}")]
-        public IActionResult GetMetadata(string fileName)
+        [HttpGet("read/{gridFsId}")]
+        public async Task<IActionResult> ReadBookPdfOnline(string gridFsId)
         {
-            var pdfReader = new PdfMetadataReader(); // Menggunakan logic Raka
-            var metadata = pdfReader.ExtractMetadata(fileName);
-            return Ok(new { Metadata = metadata });
+            try
+            {
+                var pdfStream = await _repo.GetPdfStreamAsync(gridFsId);
+                // TIDAK ADA parameter nama file -> Browser akan MENAMPILKAN PDF (Inline)
+                return File(pdfStream, "application/pdf");
+            }
+            catch
+            {
+                return NotFound("File PDF tidak ditemukan untuk dibaca.");
+            }
         }
 
         // --- FITUR TEGAR (Anggota 5): Tracking & Automata ---

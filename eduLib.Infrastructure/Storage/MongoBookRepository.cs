@@ -56,5 +56,11 @@ namespace eduLib.Infrastructure.Storage
             var objectId = new ObjectId(gridFsId);
             return await _gridFS.DownloadAsBytesAsync(objectId);
         }
+        public async Task<Stream> GetPdfStreamAsync(string gridFsId)
+        {
+            var objectId = new MongoDB.Bson.ObjectId(gridFsId);
+            // OpenDownloadStreamAsync mengembalikan stream murni
+            return await _gridFS.OpenDownloadStreamAsync(objectId);
+        }
     }
 }
