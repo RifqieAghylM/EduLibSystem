@@ -39,5 +39,16 @@ namespace eduLib.Tests.ViewerTests
                 // Sukses: Defensive programming bekerja
             }
         }
+        [TestMethod]
+        public void Profiling_Viewer_MetadataStringManipulation()
+        {
+            var reader = new PdfMetadataReader();
+
+            // Stress test: Memanipulasi string puluhan ribu kali untuk memicu Garbage Collector (ikon kuning di grafik)
+            for (int i = 0; i < 100000; i++)
+            {
+                string metadata = reader.ExtractMetadata("buku_rekayasa_perangkat_lunak_" + i + ".pdf");
+            }
+        }
     }
 }
