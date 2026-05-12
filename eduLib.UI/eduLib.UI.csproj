@@ -8,4 +8,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\eduLib.Application\eduLib.Application.csproj" />
+    <ProjectReference Include="..\eduLib.Core\eduLib.Core.csproj" />
+    <ProjectReference Include="..\eduLib.Infrastructure\eduLib.Infrastructure.csproj" />
+    <ProjectReference Include="..\eduLib.Tests\eduLib.Tests.csproj" />
+  </ItemGroup>
+
 </Project>
