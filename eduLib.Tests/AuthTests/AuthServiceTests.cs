@@ -36,6 +36,17 @@ namespace eduLib.Tests.AuthTests
             Assert.AreEqual(SessionState.LoggedIn, _authService.GetCurrentState());
         }
 
+        [TestMethod]
+        public void Login_UsernameCapital_StillLogsIn()
+        {
+            // Act
+            var user = _authService.Login("AZKA_ADMIN", "123");
+
+            // Assert
+            Assert.IsNotNull(user);
+            Assert.AreEqual(SessionState.LoggedIn, _authService.GetCurrentState());
+        }
+
         // PERBAIKAN 1: Menggunakan pola Try-Catch-Fail
         [TestMethod]
         public void Login_InvalidCredentials_ThrowsUnauthorizedAccess()
