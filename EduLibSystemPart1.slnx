@@ -1,1 +1,7 @@
-<Solution />
+<Solution>
+  <Project Path="eduLib.Application/eduLib.Application.csproj" />
+  <Project Path="eduLib.Core/eduLib.Core.csproj" />
+  <Project Path="eduLib.Infrastructure/eduLib.Infrastructure.csproj" />
+  <Project Path="eduLib.Tests/eduLib.Tests.csproj" />
+  <Project Path="eduLib.UI/eduLib.UI.csproj" />
+</Solution>

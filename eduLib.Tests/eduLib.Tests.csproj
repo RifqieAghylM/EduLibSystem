@@ -12,6 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eduLib.Application\eduLib.Application.csproj" />
+    <ProjectReference Include="..\eduLib.Core\eduLib.Core.csproj" />
+    <ProjectReference Include="..\eduLib.Infrastructure\eduLib.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
