@@ -13,6 +13,7 @@ namespace eduLib.Infrastructure.Storage
     {
         private readonly IMongoCollection<Book> _booksCollection;
         private readonly IGridFSBucket _gridFS;
+        private readonly IMongoCollection<Review> _reviewsCollection;
 
         // Constructor membaca connection string (nantinya dari appsettings.json)
         public MongoBookRepository(string connectionString, string databaseName)
@@ -22,6 +23,7 @@ namespace eduLib.Infrastructure.Storage
 
             _booksCollection = database.GetCollection<Book>("BooksData");
             _gridFS = new GridFSBucket(database); // Inisialisasi GridFS
+            _reviewsCollection = database.GetCollection<Review>("Reviews");
         }
 
         // --- FITUR RIFKI: Upload PDF ke GridFS & Simpan Metadata ---
@@ -38,6 +40,40 @@ namespace eduLib.Infrastructure.Storage
 
             return bookMetadata.Id;
         }
+        // --- FITUR UPDATE: Memperbarui Metadata Buku ---
+        public async Task<bool> UpdateBookAsync(string id, Book updatedBook)
+        {
+            var filter = Builders<Book>.Filter.Eq(b => b.Id, id);
+            var update = Builders<Book>.Update
+                .Set(b => b.Title, updatedBook.Title)
+                .Set(b => b.Author, updatedBook.Author)
+                .Set(b => b.Year, updatedBook.Year);
+            // GridFsFileId tidak diubah kecuali ingin mengganti file PDF-nya juga
+
+            var result = await _booksCollection.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
+        }
+
+        // --- FITUR DELETE: Menghapus Metadata dan File di GridFS ---
+        public async Task<bool> DeleteBookAsync(string id)
+        {
+            // 1. Cari buku terlebih dahulu untuk mendapatkan ID GridFS-nya
+            var filter = Builders<Book>.Filter.Eq(b => b.Id, id);
+            var book = await _booksCollection.Find(filter).FirstOrDefaultAsync();
+
+            if (book == null) return false;
+
+            // 2. Hapus file PDF dari GridFS (jika ada)
+            if (!string.IsNullOrEmpty(book.GridFsFileId))
+            {
+                var gridFsObjectId = new MongoDB.Bson.ObjectId(book.GridFsFileId);
+                await _gridFS.DeleteAsync(gridFsObjectId);
+            }
+
+            // 3. Hapus metadata buku dari Collection
+            var result = await _booksCollection.DeleteOneAsync(filter);
+            return result.DeletedCount > 0;
+        }
 
         // --- FITUR RIFQIE: Cari Buku dari MongoDB ---
         public async Task<List<Book>> SearchBooksAsync(string keyword)
@@ -48,6 +84,24 @@ namespace eduLib.Infrastructure.Storage
             );
 
             return await _booksCollection.Find(filter).ToListAsync();
+        }
+        // --- FITUR REVIEW: Tambah Review Baru ---
+        public async Task<Review> AddReviewAsync(Review review)
+        {
+            // Set waktu saat ini (UTC) agar sesuai dengan format di MongoDB
+            review.Date = DateTime.UtcNow;
+
+            await _reviewsCollection.InsertOneAsync(review);
+            return review;
+        }
+
+        // --- FITUR REVIEW: Ambil Semua Review ---
+        public async Task<List<Review>> GetAllReviewsAsync()
+        {
+            // Mengambil semua review dan mengurutkannya dari yang terbaru
+            return await _reviewsCollection.Find(_ => true)
+                                           .SortByDescending(r => r.Date)
+                                           .ToListAsync();
         }
 
         // --- FITUR RAKA: Unduh File PDF dari GridFS ---

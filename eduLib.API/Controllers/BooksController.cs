@@ -52,6 +52,64 @@ namespace eduLib.API.Controllers
 
             return Ok(new { Message = "Upload Sukses", BookId = bookId });
         }
+        // [PUT] /api/books/{id}
+        // Dipakai untuk mengupdate metadata buku (Judul, Penulis, Tahun)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBook(string id, [FromForm] string title, [FromForm] string author, [FromForm] int year)
+        {
+            var updatedMetadata = new Book { Title = title, Author = author, Year = year };
+
+            var isUpdated = await _repo.UpdateBookAsync(id, updatedMetadata);
+
+            if (!isUpdated)
+                return NotFound(new { Message = "Buku tidak ditemukan atau tidak ada perubahan." });
+
+            return Ok(new { Message = "Metadata buku berhasil diperbarui." });
+        }
+
+        // [DELETE] /api/books/{id}
+        // Dipakai untuk menghapus buku (Data & File PDF)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(string id)
+        {
+            var isDeleted = await _repo.DeleteBookAsync(id);
+
+            if (!isDeleted)
+                return NotFound(new { Message = "Buku tidak ditemukan." });
+
+            return Ok(new { Message = "Buku beserta file PDF berhasil dihapus secara permanen." });
+        }
+
+        // [POST] /api/books/review
+        // Dipakai di Postman (Body -> form-data atau x-www-form-urlencoded) untuk mengirim review
+        [HttpPost("review")]
+        public async Task<IActionResult> AddReview([FromForm] string username, [FromForm] string comment)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(comment))
+            {
+                return BadRequest("Username dan Comment tidak boleh kosong.");
+            }
+
+            var newReview = new Review
+            {
+                Username = username,
+                Comment = comment
+                // Date akan di-set otomatis di Repository
+            };
+
+            var result = await _repo.AddReviewAsync(newReview);
+
+            return Ok(new { Message = "Review berhasil ditambahkan!", Data = result });
+        }
+
+        // [GET] /api/books/reviews
+        // Dipakai untuk menampilkan semua review yang ada
+        [HttpGet("reviews")]
+        public async Task<IActionResult> GetReviews()
+        {
+            var reviews = await _repo.GetAllReviewsAsync();
+            return Ok(reviews);
+        }
 
         [HttpGet("download/{gridFsId}")]
         public async Task<IActionResult> DownloadBookPdf(string gridFsId)
@@ -114,18 +172,45 @@ namespace eduLib.API.Controllers
         }
 
         // --- FITUR AZKA (Anggota 1): Auth & Role Check ---
-        // (Simulasi sederhana, biasanya menggunakan JWT Token)
         [HttpPost("login")]
         public IActionResult Login([FromQuery] string username, [FromQuery] string password)
         {
             // Dummy user list sesuai logic Azka
-            var users = new List<User> { new User { Username = "admin", Password = "123", UserRole = Role.Admin } };
+            var users = new List<User>
+    {
+        new User
+        {
+            Username = "admin",
+            Password = "Admin123",
+            UserRole = Role.Admin
+        },
+        new User
+        {
+            Username = "guru",
+            Password = "Guru123",
+            UserRole = Role.Guru
+        },
+        new User
+        {
+            Username = "pelajar",
+            Password = "Pelajar123",
+            UserRole = Role.Pelajar
+        }
+    };
+
             var auth = new AuthService(users);
 
             try
             {
                 var user = auth.Login(username, password);
-                return Ok(new { Message = "Login Berhasil", Role = user.UserRole.ToString() });
+
+                return Ok(new
+                {
+                    Message = "Login Berhasil",
+                    Username = user.Username,
+                    Role = user.UserRole.ToString(),
+                    Menu = auth.GetUserMenus(user)
+                });
             }
             catch
             {
