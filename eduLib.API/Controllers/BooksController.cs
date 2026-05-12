@@ -85,11 +85,24 @@ namespace eduLib.API.Controllers
 
         // --- FITUR TEGAR (Anggota 5): Tracking & Automata ---
         [HttpPost("track-progress")]
-        public IActionResult UpdateProgress([FromQuery] int currentPage, [FromQuery] int totalPage)
+        public IActionResult UpdateProgress([FromQuery] string bookId, [FromQuery] int currentPage, [FromQuery] int totalPage)
         {
-            var automata = new ReadingStateMachine(); // Menggunakan logic Tegar
+            // 1. Hitung statusnya menggunakan Automata
+            var automata = new ReadingStateMachine();
             automata.UpdateProgress(currentPage, totalPage);
-            return Ok(new { Status = automata.CurrentState.ToString() });
+
+            // 2. Simpan halamannya menggunakan Table-driven (BookmarkManager)
+            var bookmarkMgr = new BookmarkManager();
+            bookmarkMgr.SaveBookmark(bookId, currentPage);
+
+            // 3. Kembalikan respons yang lebih lengkap dan masuk akal
+            return Ok(new
+            {
+                IdBuku = bookId,
+                HalamanTerakhir = currentPage,
+                StatusBacaan = automata.CurrentState.ToString(),
+                Pesan = $"Progres buku '{bookId}' berhasil diperbarui ke sistem."
+            });
         }
 
         [HttpPost("bookmark")]
