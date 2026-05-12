@@ -1,0 +1,6 @@
+@eduLib.API_HostAddress = http://localhost:5096
+
+GET {{eduLib.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
