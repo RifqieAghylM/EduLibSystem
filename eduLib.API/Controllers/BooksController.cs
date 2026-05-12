@@ -80,6 +80,37 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Buku beserta file PDF berhasil dihapus secara permanen." });
         }
 
+        // [POST] /api/books/review
+        // Dipakai di Postman (Body -> form-data atau x-www-form-urlencoded) untuk mengirim review
+        [HttpPost("review")]
+        public async Task<IActionResult> AddReview([FromForm] string username, [FromForm] string comment)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(comment))
+            {
+                return BadRequest("Username dan Comment tidak boleh kosong.");
+            }
+
+            var newReview = new Review
+            {
+                Username = username,
+                Comment = comment
+                // Date akan di-set otomatis di Repository
+            };
+
+            var result = await _repo.AddReviewAsync(newReview);
+
+            return Ok(new { Message = "Review berhasil ditambahkan!", Data = result });
+        }
+
+        // [GET] /api/books/reviews
+        // Dipakai untuk menampilkan semua review yang ada
+        [HttpGet("reviews")]
+        public async Task<IActionResult> GetReviews()
+        {
+            var reviews = await _repo.GetAllReviewsAsync();
+            return Ok(reviews);
+        }
+
         [HttpGet("download/{gridFsId}")]
         public async Task<IActionResult> DownloadBookPdf(string gridFsId)
         {

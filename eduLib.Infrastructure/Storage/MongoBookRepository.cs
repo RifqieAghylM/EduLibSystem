@@ -13,6 +13,7 @@ namespace eduLib.Infrastructure.Storage
     {
         private readonly IMongoCollection<Book> _booksCollection;
         private readonly IGridFSBucket _gridFS;
+        private readonly IMongoCollection<Review> _reviewsCollection;
 
         // Constructor membaca connection string (nantinya dari appsettings.json)
         public MongoBookRepository(string connectionString, string databaseName)
@@ -22,6 +23,7 @@ namespace eduLib.Infrastructure.Storage
 
             _booksCollection = database.GetCollection<Book>("BooksData");
             _gridFS = new GridFSBucket(database); // Inisialisasi GridFS
+            _reviewsCollection = database.GetCollection<Review>("Reviews");
         }
 
         // --- FITUR RIFKI: Upload PDF ke GridFS & Simpan Metadata ---
@@ -82,6 +84,24 @@ namespace eduLib.Infrastructure.Storage
             );
 
             return await _booksCollection.Find(filter).ToListAsync();
+        }
+        // --- FITUR REVIEW: Tambah Review Baru ---
+        public async Task<Review> AddReviewAsync(Review review)
+        {
+            // Set waktu saat ini (UTC) agar sesuai dengan format di MongoDB
+            review.Date = DateTime.UtcNow;
+
+            await _reviewsCollection.InsertOneAsync(review);
+            return review;
+        }
+
+        // --- FITUR REVIEW: Ambil Semua Review ---
+        public async Task<List<Review>> GetAllReviewsAsync()
+        {
+            // Mengambil semua review dan mengurutkannya dari yang terbaru
+            return await _reviewsCollection.Find(_ => true)
+                                           .SortByDescending(r => r.Date)
+                                           .ToListAsync();
         }
 
         // --- FITUR RAKA: Unduh File PDF dari GridFS ---
