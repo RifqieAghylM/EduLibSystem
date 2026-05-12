@@ -10,14 +10,11 @@ namespace eduLib.Core.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-
         public string Title { get; set; }
         public string Author { get; set; }
         public int Year { get; set; }
-
         // Dibutuhkan oleh Program.cs (JSON System) untuk memecahkan Error CS0117
         public string PdfPath { get; set; }
-
         // Dibutuhkan oleh MongoDB & GridFS (API System)
         public string GridFsFileId { get; set; }
     }
