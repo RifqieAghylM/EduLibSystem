@@ -38,6 +38,40 @@ namespace eduLib.Infrastructure.Storage
 
             return bookMetadata.Id;
         }
+        // --- FITUR UPDATE: Memperbarui Metadata Buku ---
+        public async Task<bool> UpdateBookAsync(string id, Book updatedBook)
+        {
+            var filter = Builders<Book>.Filter.Eq(b => b.Id, id);
+            var update = Builders<Book>.Update
+                .Set(b => b.Title, updatedBook.Title)
+                .Set(b => b.Author, updatedBook.Author)
+                .Set(b => b.Year, updatedBook.Year);
+            // GridFsFileId tidak diubah kecuali ingin mengganti file PDF-nya juga
+
+            var result = await _booksCollection.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
+        }
+
+        // --- FITUR DELETE: Menghapus Metadata dan File di GridFS ---
+        public async Task<bool> DeleteBookAsync(string id)
+        {
+            // 1. Cari buku terlebih dahulu untuk mendapatkan ID GridFS-nya
+            var filter = Builders<Book>.Filter.Eq(b => b.Id, id);
+            var book = await _booksCollection.Find(filter).FirstOrDefaultAsync();
+
+            if (book == null) return false;
+
+            // 2. Hapus file PDF dari GridFS (jika ada)
+            if (!string.IsNullOrEmpty(book.GridFsFileId))
+            {
+                var gridFsObjectId = new MongoDB.Bson.ObjectId(book.GridFsFileId);
+                await _gridFS.DeleteAsync(gridFsObjectId);
+            }
+
+            // 3. Hapus metadata buku dari Collection
+            var result = await _booksCollection.DeleteOneAsync(filter);
+            return result.DeletedCount > 0;
+        }
 
         // --- FITUR RIFQIE: Cari Buku dari MongoDB ---
         public async Task<List<Book>> SearchBooksAsync(string keyword)

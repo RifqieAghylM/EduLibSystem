@@ -52,6 +52,33 @@ namespace eduLib.API.Controllers
 
             return Ok(new { Message = "Upload Sukses", BookId = bookId });
         }
+        // [PUT] /api/books/{id}
+        // Dipakai untuk mengupdate metadata buku (Judul, Penulis, Tahun)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBook(string id, [FromForm] string title, [FromForm] string author, [FromForm] int year)
+        {
+            var updatedMetadata = new Book { Title = title, Author = author, Year = year };
+
+            var isUpdated = await _repo.UpdateBookAsync(id, updatedMetadata);
+
+            if (!isUpdated)
+                return NotFound(new { Message = "Buku tidak ditemukan atau tidak ada perubahan." });
+
+            return Ok(new { Message = "Metadata buku berhasil diperbarui." });
+        }
+
+        // [DELETE] /api/books/{id}
+        // Dipakai untuk menghapus buku (Data & File PDF)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(string id)
+        {
+            var isDeleted = await _repo.DeleteBookAsync(id);
+
+            if (!isDeleted)
+                return NotFound(new { Message = "Buku tidak ditemukan." });
+
+            return Ok(new { Message = "Buku beserta file PDF berhasil dihapus secara permanen." });
+        }
 
         [HttpGet("download/{gridFsId}")]
         public async Task<IActionResult> DownloadBookPdf(string gridFsId)
