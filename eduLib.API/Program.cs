@@ -6,8 +6,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// PENTING: Hapus atau comment pengecekan if(IsDevelopment)
-// Kita paksa Swagger agar SELALU aktif
 app.UseSwagger();
 app.UseSwaggerUI();
 

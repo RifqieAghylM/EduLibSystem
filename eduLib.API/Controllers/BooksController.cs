@@ -1,15 +1,9 @@
 ﻿using eduLib.Core.Entities;
 using eduLib.Core.Enums;
 using eduLib.Infrastructure.Storage;
-using eduLib.Infrastructure.Viewer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using eduLib.Application.Auth;        // Agar kenal AuthService (Azka)
-using eduLib.Application.Tracking;    // Agar kenal ReadingStateMachine & BookmarkManager (Tegar)
-using eduLib.Core.Entities;           // Agar kenal kelas User & Book
-using eduLib.Core.Enums;              // Agar kenal Role
-using System.IO;
-using System.Threading.Tasks;
+using eduLib.Application.Auth;        
+using eduLib.Application.Tracking;               
 
 namespace eduLib.API.Controllers
 {
@@ -19,17 +13,12 @@ namespace eduLib.API.Controllers
     {
         private readonly MongoBookRepository _repo;
 
-        public BooksController()
+        public BooksController(IConfiguration config)
         {
-            // Menggunakan koneksi MongoDB Atlas asli milik kelompokmu!
-            string mongoAtlasConnString = "mongodb+srv://raka:rootz@cluster0.1qgyljt.mongodb.net/?appName=Cluster0";
-
-            // Nama database-nya adalah "book"
-            _repo = new MongoBookRepository(mongoAtlasConnString, "book");
+            string mongoAtlasConnString = config.GetConnectionString("MongoAtlas"); // koneksi db
+             _repo = new MongoBookRepository(mongoAtlasConnString, "book");
         }
-
-        // [GET] /api/books/search?keyword=C#
-        // Dipakai oleh Swagger / Postman untuk fitur FR-04 (Pencarian)
+        // fitur search
         [HttpGet("search")]
         public async Task<IActionResult> SearchBooks([FromQuery] string keyword)
         {
@@ -37,8 +26,7 @@ namespace eduLib.API.Controllers
             return Ok(results); // Mengembalikan JSON Response secara otomatis
         }
 
-        // [POST] /api/books/upload
-        // Dipakai di Postman (Body -> form-data) untuk fitur FR-02 (Upload File)
+        // fitur upload buku baru
         [HttpPost("upload")]
         public async Task<IActionResult> UploadBook([FromForm] string title, [FromForm] string author, [FromForm] int year, IFormFile pdfFile)
         {
@@ -52,8 +40,7 @@ namespace eduLib.API.Controllers
 
             return Ok(new { Message = "Upload Sukses", BookId = bookId });
         }
-        // [PUT] /api/books/{id}
-        // Dipakai untuk mengupdate metadata buku (Judul, Penulis, Tahun)
+        // fitur update buku
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook(string id, [FromForm] string title, [FromForm] string author, [FromForm] int year)
         {
@@ -67,8 +54,7 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Metadata buku berhasil diperbarui." });
         }
 
-        // [DELETE] /api/books/{id}
-        // Dipakai untuk menghapus buku (Data & File PDF)
+        // fitur delete buku
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(string id)
         {
@@ -80,8 +66,7 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Buku beserta file PDF berhasil dihapus secara permanen." });
         }
 
-        // [POST] /api/books/review
-        // Dipakai di Postman (Body -> form-data atau x-www-form-urlencoded) untuk mengirim review
+        // fitur tambah review
         [HttpPost("review")]
         public async Task<IActionResult> AddReview([FromForm] string username, [FromForm] string comment)
         {
@@ -89,67 +74,74 @@ namespace eduLib.API.Controllers
             {
                 return BadRequest("Username dan Comment tidak boleh kosong.");
             }
-
             var newReview = new Review
             {
                 Username = username,
                 Comment = comment
-                // Date akan di-set otomatis di Repository
+                // Date di-set otomatis di Repository
             };
-
             var result = await _repo.AddReviewAsync(newReview);
-
             return Ok(new { Message = "Review berhasil ditambahkan!", Data = result });
         }
-
-        // [GET] /api/books/reviews
-        // Dipakai untuk menampilkan semua review yang ada
+        // fitur ambil semua review
         [HttpGet("reviews")]
         public async Task<IActionResult> GetReviews()
         {
             var reviews = await _repo.GetAllReviewsAsync();
             return Ok(reviews);
         }
-
-        [HttpGet("download/{gridFsId}")]
+        [HttpGet("download/{gridFsId}")] // fitur download buku
         public async Task<IActionResult> DownloadBookPdf(string gridFsId)
         {
+            if (string.IsNullOrWhiteSpace(gridFsId) || gridFsId.Length != 24)
+            {
+                return BadRequest(new { Message = "Pre-condition gagal: ID GridFS harus berupa 24 karakter heksadesimal." });
+            }
             try
             {
                 var fileBytes = await _repo.DownloadPdfAsync(gridFsId);
-                // ADA parameter nama file ("downloaded_book.pdf") -> Browser akan MENGUNDUH file
+                if (fileBytes == null || fileBytes.Length == 0)
+                {
+                    return StatusCode(500, new { Message = "Post-condition gagal: Berkas berhasil ditarik, tetapi data kosong (corrupt)." });
+                }
                 return File(fileBytes, "application/pdf", "downloaded_book.pdf");
             }
             catch
             {
-                return NotFound("File PDF tidak ditemukan di GridFS.");
+                return NotFound(new { Message = "File PDF tidak ditemukan di GridFS." });
             }
         }
-
-        [HttpGet("read/{gridFsId}")]
+        [HttpGet("read/{gridFsId}")] // fitur baca buku online
         public async Task<IActionResult> ReadBookPdfOnline(string gridFsId)
         {
+            if (string.IsNullOrWhiteSpace(gridFsId) || gridFsId.Length != 24)
+            {
+                return BadRequest(new { Message = "Pre-condition gagal: ID GridFS tidak valid." });
+            }
             try
             {
                 var pdfStream = await _repo.GetPdfStreamAsync(gridFsId);
-                // TIDAK ADA parameter nama file -> Browser akan MENAMPILKAN PDF (Inline)
+                if (pdfStream == null || pdfStream.Length == 0)
+                {
+                    return StatusCode(500, new { Message = "Post-condition gagal: Aliran data (stream) PDF tidak dapat diakses." });
+                }
                 return File(pdfStream, "application/pdf");
             }
             catch
             {
-                return NotFound("File PDF tidak ditemukan untuk dibaca.");
+                return NotFound(new { Message = "File PDF tidak ditemukan untuk dibaca." });
             }
         }
 
-        // --- FITUR TEGAR (Anggota 5): Tracking & Automata ---
+        // fitur Tracking pakai Automata
         [HttpPost("track-progress")]
         public IActionResult UpdateProgress([FromQuery] int currentPage, [FromQuery] int totalPage)
         {
-            var automata = new ReadingStateMachine(); // Menggunakan logic Tegar
+            var automata = new ReadingStateMachine();
             automata.UpdateProgress(currentPage, totalPage);
             return Ok(new { Status = automata.CurrentState.ToString() });
         }
-
+        //fitur tambah bookmark
         [HttpPost("bookmark")]
         public IActionResult SaveBookmark([FromQuery] string bookId, [FromQuery] int page)
         {
@@ -158,15 +150,13 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = $"Bookmark buku {bookId} di halaman {page} berhasil disimpan." });
         }
 
-        // --- FITUR AZKA (Anggota 1): Auth & Role Check ---
-        // (Simulasi sederhana, biasanya menggunakan JWT Token)
+        // fitur login
         [HttpPost("login")]
         public IActionResult Login([FromQuery] string username, [FromQuery] string password)
         {
             // Dummy user list sesuai logic Azka
             var users = new List<User> { new User { Username = "admin", Password = "123", UserRole = Role.Admin } };
             var auth = new AuthService(users);
-
             try
             {
                 var user = auth.Login(username, password);

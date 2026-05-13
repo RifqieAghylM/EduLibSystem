@@ -2,20 +2,15 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eduLib.Infrastructure.Storage
 {
-    public class MongoBookRepository
+    public class MongoBookRepository : IBookRepository
     {
         private readonly IMongoCollection<Book> _booksCollection;
         private readonly IGridFSBucket _gridFS;
         private readonly IMongoCollection<Review> _reviewsCollection;
-
-        // Constructor membaca connection string (nantinya dari appsettings.json)
+        // set koneksi
         public MongoBookRepository(string connectionString, string databaseName)
         {
             var client = new MongoClient(connectionString);
@@ -31,10 +26,8 @@ namespace eduLib.Infrastructure.Storage
         {
             // 1. Upload file fisik PDF ke GridFS
             var gridFsId = await _gridFS.UploadFromStreamAsync(fileName, pdfFileStream);
-
             // 2. Hubungkan ID GridFS ke Metadata Buku
             bookMetadata.GridFsFileId = gridFsId.ToString();
-
             // 3. Simpan Metadata ke Collection biasa
             await _booksCollection.InsertOneAsync(bookMetadata);
 
@@ -49,7 +42,6 @@ namespace eduLib.Infrastructure.Storage
                 .Set(b => b.Author, updatedBook.Author)
                 .Set(b => b.Year, updatedBook.Year);
             // GridFsFileId tidak diubah kecuali ingin mengganti file PDF-nya juga
-
             var result = await _booksCollection.UpdateOneAsync(filter, update);
             return result.ModifiedCount > 0;
         }
@@ -62,14 +54,12 @@ namespace eduLib.Infrastructure.Storage
             var book = await _booksCollection.Find(filter).FirstOrDefaultAsync();
 
             if (book == null) return false;
-
             // 2. Hapus file PDF dari GridFS (jika ada)
             if (!string.IsNullOrEmpty(book.GridFsFileId))
             {
                 var gridFsObjectId = new MongoDB.Bson.ObjectId(book.GridFsFileId);
                 await _gridFS.DeleteAsync(gridFsObjectId);
             }
-
             // 3. Hapus metadata buku dari Collection
             var result = await _booksCollection.DeleteOneAsync(filter);
             return result.DeletedCount > 0;
@@ -103,17 +93,17 @@ namespace eduLib.Infrastructure.Storage
                                            .SortByDescending(r => r.Date)
                                            .ToListAsync();
         }
-
-        // --- FITUR RAKA: Unduh File PDF dari GridFS ---
+        // fitur download
         public async Task<byte[]> DownloadPdfAsync(string gridFsId)
         {
             var objectId = new ObjectId(gridFsId);
             return await _gridFS.DownloadAsBytesAsync(objectId);
         }
+        // fitur baca online
         public async Task<Stream> GetPdfStreamAsync(string gridFsId)
         {
             var objectId = new MongoDB.Bson.ObjectId(gridFsId);
-            // OpenDownloadStreamAsync mengembalikan stream murni
+            // menampilkan file PDF sebagai Stream
             return await _gridFS.OpenDownloadStreamAsync(objectId);
         }
     }

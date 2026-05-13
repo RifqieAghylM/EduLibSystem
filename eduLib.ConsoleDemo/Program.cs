@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using eduLib.Core.Entities;
 using eduLib.Core.Enums;
 using eduLib.Application.Auth;
 using eduLib.Application.Search;
 using eduLib.Application.Tracking;
 using eduLib.Infrastructure.Storage;
-using eduLib.Infrastructure.Viewer;
 using eduLib.Infrastructure.API;
 
 namespace eduLib.ConsoleDemo
@@ -22,8 +17,6 @@ namespace eduLib.ConsoleDemo
         static FileRepository<Book> _fileRepo;
         static SearchService _searchService;
         static ReviewApiConnector _apiConnector;
-        static PdfMetadataReader _pdfReader;
-        static DownloadManager _downloadMgr;
         static ReadingStateMachine _readingMachine;
         static BookmarkManager _bookmarkMgr;
         static string _dbPath = "edulib_db.json";
@@ -80,9 +73,7 @@ namespace eduLib.ConsoleDemo
             Console.ReadLine();
         }
 
-        // ══════════════════════════════════════
         // INISIALISASI
-        // ══════════════════════════════════════
         static void InisialisasiSistem()
         {
             // Data user (simulasi database user)
@@ -97,8 +88,6 @@ namespace eduLib.ConsoleDemo
             _fileRepo = new FileRepository<Book>(50);
             _searchService = new SearchService();
             _apiConnector = new ReviewApiConnector();
-            _pdfReader = new PdfMetadataReader();
-            _downloadMgr = new DownloadManager("C:/eduLib/Downloads");
             _readingMachine = new ReadingStateMachine();
             _bookmarkMgr = new BookmarkManager();
 
@@ -152,16 +141,14 @@ namespace eduLib.ConsoleDemo
             Console.WriteLine("║  1. Lihat Semua Buku                 ║");
             Console.WriteLine("║  2. Cari Buku                        ║");
             Console.WriteLine("║  3. Kirim Ulasan Buku                ║");
-            Console.WriteLine("║  4. Lihat Metadata PDF               ║");
-            Console.WriteLine("║  5. Unduh Buku                       ║");
-            Console.WriteLine("║  6. Update Progres Membaca           ║");
-            Console.WriteLine("║  7. Simpan Bookmark                  ║");
-            Console.WriteLine("║  8. Lihat Bookmark                   ║");
+            Console.WriteLine("║  4. Update Progres Membaca           ║");
+            Console.WriteLine("║  5. Simpan Bookmark                  ║");
+            Console.WriteLine("║  6. Lihat Bookmark                   ║");
 
             // Menu khusus Admin
             if (_currentUser.UserRole == Role.Admin)
             {
-                Console.WriteLine("║  9. Upload Buku Baru [ADMIN]         ║");
+                Console.WriteLine("║  7. Upload Buku Baru [ADMIN]         ║");
             }
 
             Console.WriteLine("║  L. Logout                           ║");
@@ -169,9 +156,7 @@ namespace eduLib.ConsoleDemo
             Console.WriteLine("╚══════════════════════════════════════╝");
         }
 
-        // ══════════════════════════════════════
         // PROSES MENU
-        // ══════════════════════════════════════
         static async Task ProsesMenu(string pilihan)
         {
             Console.WriteLine();
@@ -180,12 +165,10 @@ namespace eduLib.ConsoleDemo
                 case "1": LihatSemuaBuku(); break;
                 case "2": CariBuku(); break;
                 case "3": await KirimUlasan(); break;
-                case "4": LihatMetadataPdf(); break;
-                case "5": UnduhBuku(); break;
-                case "6": UpdateProgresMembaca(); break;
-                case "7": SimpanBookmark(); break;
-                case "8": LihatBookmark(); break;
-                case "9":
+                case "4": UpdateProgresMembaca(); break;
+                case "5": SimpanBookmark(); break;
+                case "6": LihatBookmark(); break;
+                case "7":
                     if (_currentUser.UserRole == Role.Admin)
                         UploadBuku();
                     else
@@ -199,9 +182,7 @@ namespace eduLib.ConsoleDemo
             }
         }
 
-        // ══════════════════════════════════════
         // FITUR 1: Lihat Semua Buku - Modul Rifki
-        // ══════════════════════════════════════
         static void LihatSemuaBuku()
         {
             Console.WriteLine("─────────────────────────────────────");
@@ -218,9 +199,7 @@ namespace eduLib.ConsoleDemo
             Console.WriteLine($"\nTotal: {semuaBuku.Count} buku");
         }
 
-        // ══════════════════════════════════════
         // FITUR 2: Cari Buku - Modul Rifqie
-        // ══════════════════════════════════════
         static void CariBuku()
         {
             Console.WriteLine("─────────────────────────────────────");
@@ -253,9 +232,7 @@ namespace eduLib.ConsoleDemo
             }
         }
 
-        // ══════════════════════════════════════
         // FITUR 3: Kirim Ulasan - Modul Rifqie (API)
-        // ══════════════════════════════════════
         static async Task KirimUlasan()
         {
             Console.WriteLine("─────────────────────────────────────");
@@ -279,55 +256,7 @@ namespace eduLib.ConsoleDemo
             }
         }
 
-        // ══════════════════════════════════════
-        // FITUR 4: Lihat Metadata PDF - Modul Raka
-        // ══════════════════════════════════════
-        static void LihatMetadataPdf()
-        {
-            Console.WriteLine("─────────────────────────────────────");
-            Console.WriteLine("        LIHAT METADATA PDF           ");
-            Console.WriteLine("─────────────────────────────────────");
-            Console.Write("Masukkan nama file PDF (contoh: buku.pdf): ");
-            string filePdf = Console.ReadLine();
-
-            try
-            {
-                string metadata = _pdfReader.ExtractMetadata(filePdf);
-                Console.WriteLine($"\n✅ {metadata}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error: {ex.Message}");
-            }
-        }
-
-        // ══════════════════════════════════════
-        // FITUR 5: Unduh Buku - Modul Raka
-        // ══════════════════════════════════════
-        static void UnduhBuku()
-        {
-            Console.WriteLine("─────────────────────────────────────");
-            Console.WriteLine("            UNDUH BUKU               ");
-            Console.WriteLine("─────────────────────────────────────");
-            Console.Write("Masukkan ID Buku  : ");
-            string bookId = Console.ReadLine();
-            Console.Write("Masukkan nama file: ");
-            string namaFile = Console.ReadLine();
-
-            try
-            {
-                string hasil = _downloadMgr.ProcessDownload(bookId, namaFile);
-                Console.WriteLine($"\n✅ {hasil}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error: {ex.Message}");
-            }
-        }
-
-        // ══════════════════════════════════════
-        // FITUR 6: Update Progres - Modul Tegar
-        // ══════════════════════════════════════
+        // FITUR 4: Update Progres - Modul Tegar
         static void UpdateProgresMembaca()
         {
             Console.WriteLine("─────────────────────────────────────");
@@ -352,9 +281,7 @@ namespace eduLib.ConsoleDemo
             }
         }
 
-        // ══════════════════════════════════════
-        // FITUR 7: Simpan Bookmark - Modul Tegar
-        // ══════════════════════════════════════
+        // FITUR 5: Simpan Bookmark - Modul Tegar
         static void SimpanBookmark()
         {
             Console.WriteLine("─────────────────────────────────────");
@@ -377,9 +304,7 @@ namespace eduLib.ConsoleDemo
             }
         }
 
-        // ══════════════════════════════════════
-        // FITUR 8: Lihat Bookmark - Modul Tegar
-        // ══════════════════════════════════════
+        // FITUR 6: Lihat Bookmark - Modul Tegar
         static void LihatBookmark()
         {
             Console.WriteLine("─────────────────────────────────────");
@@ -401,9 +326,7 @@ namespace eduLib.ConsoleDemo
             }
         }
 
-        // ══════════════════════════════════════
-        // FITUR 9: Upload Buku - Modul Rifki (Admin)
-        // ══════════════════════════════════════
+        // FITUR 7: Upload Buku - Modul Rifki (Admin)
         static void UploadBuku()
         {
             Console.WriteLine("─────────────────────────────────────");
@@ -440,9 +363,7 @@ namespace eduLib.ConsoleDemo
             }
         }
 
-        // ══════════════════════════════════════
         // LOGOUT - Modul Azka
-        // ══════════════════════════════════════
         static void Logout()
         {
             _authService.Logout();
@@ -451,9 +372,7 @@ namespace eduLib.ConsoleDemo
             _readingMachine = new ReadingStateMachine();
         }
 
-        // ══════════════════════════════════════
         // JSON DATABASE HELPER
-        // ══════════════════════════════════════
         static List<Book> LoadDatabase(string path)
         {
             if (!File.Exists(path))
