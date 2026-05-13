@@ -19,7 +19,7 @@ namespace eduLib.Tests.ViewerTests
             // Inisialisasi Mock Repository
             _mockRepo = new Mock<IBookRepository>();
             // Masukkan mock ke dalam Controller
-            _controller = new BooksController(_mockRepo.Object);
+            //_controller = new BooksController(_mockRepo.Object);
         }
 
         [TestMethod]

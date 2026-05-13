@@ -135,11 +135,25 @@ namespace eduLib.API.Controllers
 
         // fitur Tracking pakai Automata
         [HttpPost("track-progress")]
-        public IActionResult UpdateProgress([FromQuery] int currentPage, [FromQuery] int totalPage)
+        public IActionResult UpdateProgress([FromQuery] string bookId, [FromQuery] int currentPage, [FromQuery] int totalPage)
         {
+            // 1. Hitung statusnya menggunakan Automata
+
             var automata = new ReadingStateMachine();
             automata.UpdateProgress(currentPage, totalPage);
-            return Ok(new { Status = automata.CurrentState.ToString() });
+
+            // 2. Simpan halamannya menggunakan Table-driven (BookmarkManager)
+            var bookmarkMgr = new BookmarkManager();
+            bookmarkMgr.SaveBookmark(bookId, currentPage);
+
+            // 3. Kembalikan respons yang lebih lengkap dan masuk akal
+            return Ok(new
+            {
+                IdBuku = bookId,
+                HalamanTerakhir = currentPage,
+                StatusBacaan = automata.CurrentState.ToString(),
+                Pesan = $"Progres buku '{bookId}' berhasil diperbarui ke sistem."
+            });
         }
         //fitur tambah bookmark
         [HttpPost("bookmark")]
@@ -155,12 +169,40 @@ namespace eduLib.API.Controllers
         public IActionResult Login([FromQuery] string username, [FromQuery] string password)
         {
             // Dummy user list sesuai logic Azka
-            var users = new List<User> { new User { Username = "admin", Password = "123", UserRole = Role.Admin } };
+            var users = new List<User>
+    {
+        new User
+        {
+            Username = "admin",
+            Password = "Admin123",
+            UserRole = Role.Admin
+        },
+        new User
+        {
+            Username = "guru",
+            Password = "Guru123",
+            UserRole = Role.Guru
+        },
+        new User
+        {
+            Username = "pelajar",
+            Password = "Pelajar123",
+            UserRole = Role.Pelajar
+        }
+    };
+
             var auth = new AuthService(users);
             try
             {
                 var user = auth.Login(username, password);
-                return Ok(new { Message = "Login Berhasil", Role = user.UserRole.ToString() });
+
+                return Ok(new
+                {
+                    Message = "Login Berhasil",
+                    Username = user.Username,
+                    Role = user.UserRole.ToString(),
+                    Menu = auth.GetUserMenus(user)
+                });
             }
             catch
             {
