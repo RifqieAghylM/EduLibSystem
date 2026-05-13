@@ -14,11 +14,11 @@ namespace eduLib.Tests.TrackingTests
         {
             var machine = new ReadingStateMachine();
 
-            // Act 1: Mulai membaca
+            // mulai membaca
             machine.UpdateProgress(10, 100);
             Assert.AreEqual(ReadingState.Reading, machine.CurrentState);
 
-            // Act 2: Selesai membaca
+            // selesai membaca
             machine.UpdateProgress(100, 100);
             Assert.AreEqual(ReadingState.Completed, machine.CurrentState);
         }
@@ -28,7 +28,7 @@ namespace eduLib.Tests.TrackingTests
         {
             var manager = new BookmarkManager();
 
-            // Menggunakan Try-Catch-Fail untuk menguji Defensive Programming
+            // menggunakan Try-Catch-Fail untuk menguji Defensive Programming
             try
             {
                 manager.SaveBookmark("B001", -5);
@@ -36,7 +36,7 @@ namespace eduLib.Tests.TrackingTests
             }
             catch (ArgumentException)
             {
-                // Sukses: Exception yang tepat dilempar
+                
             }
         }
 
