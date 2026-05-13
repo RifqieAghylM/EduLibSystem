@@ -61,13 +61,19 @@ namespace eduLib.Tests.TrackingTests
         public void Profiling_Tracking_DictionaryLoad()
         {
             var manager = new BookmarkManager();
+            var sw = Stopwatch.StartNew();
 
             // Stress test: Menulis dan menimpa (update/insert) 500.000 data ke struktur Table-driven
             for (int i = 0; i < 500000; i++)
             {
-                // Menyimpan bookmark dengan page yang berganti-ganti
                 manager.SaveBookmark("Buku_ID_" + i, i % 100);
             }
+
+            sw.Stop();
+
+            // 500.000 operasi Dictionary harus selesai di bawah 500ms
+            Assert.IsTrue(sw.ElapsedMilliseconds < 500,
+                $"Stress test terlalu lambat: {sw.ElapsedMilliseconds}ms (batas: 500ms)");
         }
     }
 }
