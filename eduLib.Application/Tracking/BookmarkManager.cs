@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace eduLib.Application.Tracking
 {
-    // Teknik 2: Table-driven construction
+    
     public class BookmarkManager
     {
-        // Table-driven: Menggunakan struktur tabel Dictionary di memori
+        // menggunakan struktur tabel Dictionary di memori
         private readonly Dictionary<string, int> _bookmarkTable = new Dictionary<string, int>();
 
         public void SaveBookmark(string bookId, int page)
         {
-            // Defensive Programming (DbC)
+            // Defensive Programming 
             if (string.IsNullOrWhiteSpace(bookId))
                 throw new ArgumentNullException(nameof(bookId), "ID Buku tidak boleh kosong.");
             if (page < 0)

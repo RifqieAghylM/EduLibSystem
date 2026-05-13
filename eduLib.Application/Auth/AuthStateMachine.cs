@@ -8,7 +8,6 @@ namespace eduLib.Application.Auth
         private int _failedAttempts = 0;
         private const int MaxFailedAttempts = 3;
 
-        // Transisi Automata
         public void Transition(bool isLoginSuccess)
         {
             if (CurrentState == SessionState.Locked) return;
@@ -16,14 +15,14 @@ namespace eduLib.Application.Auth
             if (isLoginSuccess)
             {
                 CurrentState = SessionState.LoggedIn;
-                _failedAttempts = 0; // Reset jika sukses
+                _failedAttempts = 0;
             }
             else
             {
                 _failedAttempts++;
                 if (_failedAttempts >= MaxFailedAttempts)
                 {
-                    CurrentState = SessionState.Locked; // Transisi ke Locked
+                    CurrentState = SessionState.Locked;
                 }
             }
         }
@@ -32,7 +31,7 @@ namespace eduLib.Application.Auth
         {
             if (CurrentState == SessionState.LoggedIn)
             {
-                CurrentState = SessionState.LoggedOut; // Transisi ke LoggedOut
+                CurrentState = SessionState.LoggedOut;
             }
         }
     }
