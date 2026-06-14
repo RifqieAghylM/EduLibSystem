@@ -22,7 +22,6 @@ namespace eduLib.Infrastructure.Storage
         // --- Fitur Raka ---
         Task<byte[]> DownloadPdfAsync(string gridFsId);
         Task<Stream> GetPdfStreamAsync(string gridFsId);
-
         Task<bool> TitleExistsForOtherBookAsync(string title, string currentBookId);
     }
 }

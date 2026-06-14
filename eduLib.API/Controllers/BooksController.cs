@@ -51,14 +51,11 @@ namespace eduLib.API.Controllers
 
             string[] allowedExtensions =
             {
-                ".pdf",
-                ".docx",
-                ".doc"
-                
+                ".pdf"
             };
 
             if (!allowedExtensions.Contains(extension))
-                return BadRequest("Hanya file PDF, DOCdan DOCX yang diperbolehkan.");
+                return BadRequest("Hanya file PDF yang diperbolehkan.");
 
             bool titleExists = await _repo.TitleExistsAsync(title);
 
