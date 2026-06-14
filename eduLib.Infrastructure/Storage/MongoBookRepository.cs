@@ -1,4 +1,4 @@
-﻿using eduLib.Core.Entities;
+﻿    using eduLib.Core.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
@@ -32,6 +32,13 @@ namespace eduLib.Infrastructure.Storage
             await _booksCollection.InsertOneAsync(bookMetadata);
 
             return bookMetadata.Id;
+        }
+        public async Task<bool> TitleExistsAsync(string title)
+        {
+            return await _booksCollection
+                .Find(book => book.Title.ToLower().Trim() ==
+                              title.ToLower().Trim())
+                .AnyAsync();
         }
         // --- FITUR UPDATE: Memperbarui Metadata Buku ---
         public async Task<bool> UpdateBookAsync(string id, Book updatedBook)

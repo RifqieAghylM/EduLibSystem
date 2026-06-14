@@ -30,16 +30,64 @@ namespace eduLib.API.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> UploadBook([FromForm] string title, [FromForm] string author, [FromForm] int year, IFormFile pdfFile)
         {
-            if (pdfFile == null || pdfFile.Length == 0)
-                return BadRequest("File PDF tidak valid.");
+            if (string.IsNullOrWhiteSpace(title))
+                return BadRequest("Title wajib diisi.");
 
-            var bookMetadata = new Book { Title = title, Author = author, Year = year };
+            if (string.IsNullOrWhiteSpace(author))
+                return BadRequest("Author wajib diisi.");
+
+            // Title tidak boleh hanya angka
+            if (title.All(char.IsDigit))
+                return BadRequest("Title tidak boleh hanya berisi angka.");
+
+            // Author tidak boleh hanya angka
+            if (author.All(char.IsDigit))
+                return BadRequest("Author tidak boleh hanya berisi angka.");
+
+            if (pdfFile == null || pdfFile.Length == 0)
+                return BadRequest("File tidak valid.");
+
+            string extension = Path.GetExtension(pdfFile.FileName).ToLower();
+
+            string[] allowedExtensions =
+            {
+                ".pdf",
+                ".docx",
+                ".doc"
+                
+            };
+
+            if (!allowedExtensions.Contains(extension))
+                return BadRequest("Hanya file PDF, DOCdan DOCX yang diperbolehkan.");
+
+            bool titleExists = await _repo.TitleExistsAsync(title);
+
+            if (titleExists)
+            {
+                return BadRequest("Judul buku sudah digunakan.");
+            }
+
+            Book bookMetadata = new Book
+            {
+                Title = title.Trim(),
+                Author = author.Trim(),
+                Year = year
+            };
 
             using var stream = pdfFile.OpenReadStream();
-            var bookId = await _repo.UploadBookAsync(bookMetadata, stream, pdfFile.FileName);
 
-            return Ok(new { Message = "Upload Sukses", BookId = bookId });
+            var bookId = await _repo.UploadBookAsync(
+                bookMetadata,
+                stream,
+                pdfFile.FileName);
+
+            return Ok(new
+            {
+                Message = "Upload Sukses",
+                BookId = bookId
+            });
         }
+
         // fitur update buku
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook(string id, [FromForm] string title, [FromForm] string author, [FromForm] int year)
