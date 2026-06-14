@@ -92,15 +92,36 @@ namespace eduLib.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook(string id, [FromForm] string title, [FromForm] string author, [FromForm] int year)
         {
-            var updatedMetadata = new Book { Title = title, Author = author, Year = year };
+            if (string.IsNullOrWhiteSpace(title))
+                return BadRequest("Judul buku wajib diisi.");
 
-            var isUpdated = await _repo.UpdateBookAsync(id, updatedMetadata);
+            if (title.All(char.IsDigit))
+                return BadRequest("Judul buku tidak boleh hanya angka.");
 
-            if (!isUpdated)
-                return NotFound(new { Message = "Buku tidak ditemukan atau tidak ada perubahan." });
+            if (string.IsNullOrWhiteSpace(author))
+                return BadRequest("Nama author wajib diisi.");
 
-            return Ok(new { Message = "Metadata buku berhasil diperbarui." });
+            if (author.All(char.IsDigit))
+                return BadRequest("Nama author tidak boleh hanya angka.");
+
+            var updatedBook = new Book
+            {
+                Title = title.Trim(),
+                Author = author.Trim(),
+                Year = year
+            };
+
+            var success = await _repo.UpdateBookAsync(id, updatedBook);
+
+            if (!success)
+                return NotFound("Buku tidak ditemukan.");
+
+            return Ok(new
+            {
+                Message = "Metadata buku berhasil diperbarui."
+            });
         }
+        
 
         // fitur delete buku
         [HttpDelete("{id}")]

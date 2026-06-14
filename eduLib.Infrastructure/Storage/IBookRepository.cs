@@ -23,6 +23,6 @@ namespace eduLib.Infrastructure.Storage
         Task<byte[]> DownloadPdfAsync(string gridFsId);
         Task<Stream> GetPdfStreamAsync(string gridFsId);
 
-        Task<bool> TitleExistsAsync(string title);
+        Task<bool> TitleExistsForOtherBookAsync(string title, string currentBookId);
     }
 }

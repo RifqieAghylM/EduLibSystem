@@ -35,10 +35,8 @@ namespace eduLib.Infrastructure.Storage
         }
         public async Task<bool> TitleExistsAsync(string title)
         {
-            return await _booksCollection
-                .Find(book => book.Title.ToLower().Trim() ==
-                              title.ToLower().Trim())
-                .AnyAsync();
+            return await _booksCollection.Find(book => book.Title.ToLower().Trim() == title.ToLower().Trim()).AnyAsync();
+
         }
         // --- FITUR UPDATE: Memperbarui Metadata Buku ---
         public async Task<bool> UpdateBookAsync(string id, Book updatedBook)
@@ -51,6 +49,11 @@ namespace eduLib.Infrastructure.Storage
             // GridFsFileId tidak diubah kecuali ingin mengganti file PDF-nya juga
             var result = await _booksCollection.UpdateOneAsync(filter, update);
             return result.ModifiedCount > 0;
+        }
+        public async Task<bool> TitleExistsForOtherBookAsync(string title, string currentBookId)
+        {
+            return await _booksCollection.Find(book => book.Title.ToLower().Trim() == title.ToLower().Trim() && book.Id != currentBookId).AnyAsync();
+
         }
 
         // --- FITUR DELETE: Menghapus Metadata dan File di GridFS ---
