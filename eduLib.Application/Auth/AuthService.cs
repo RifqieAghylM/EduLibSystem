@@ -9,7 +9,7 @@ namespace eduLib.Application.Auth
     public class AuthService
     {
         private readonly AuthStateMachine _stateMachine;
-        private readonly List<User> _mockDatabase; // Simulasi database sementara
+        private readonly List<User> _mockDatabase; 
 
         public AuthService(List<User> mockDatabase)
         {
@@ -36,12 +36,15 @@ namespace eduLib.Application.Auth
                 throw new InvalidOperationException("Akun terkunci karena terlalu banyak percobaan gagal.");
             }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 13cf4513e31f95f26a18c6e669807a4d1924be49
             var user = _mockDatabase.FirstOrDefault(u =>
                 u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)
                 && u.Password == password);
             bool isSuccess = user != null;
 
-            // Memicu Automata
             _stateMachine.Transition(isSuccess);
 
             if (!isSuccess)
@@ -65,7 +68,6 @@ namespace eduLib.Application.Auth
             if (_stateMachine.CurrentState != SessionState.LoggedIn)
                 throw new InvalidOperationException("Sesi tidak valid. Harus login untuk melihat menu.");
 
-            // Memanggil Table-driven
             return RoleAccessTable.GetAccessibleMenus(user.UserRole);
         }
 

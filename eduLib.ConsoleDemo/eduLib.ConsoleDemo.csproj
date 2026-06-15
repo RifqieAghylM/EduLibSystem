@@ -1,18 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="3.8.1" />
-    <PackageReference Include="MongoDB.Driver" Version="3.8.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\eduLib.Application\eduLib.Application.csproj" />
     <ProjectReference Include="..\eduLib.Core\eduLib.Core.csproj" />
+    <ProjectReference Include="..\eduLib.Infrastructure\eduLib.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

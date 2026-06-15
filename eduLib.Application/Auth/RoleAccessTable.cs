@@ -5,7 +5,6 @@ namespace eduLib.Application.Auth
 {
     public static class RoleAccessTable
     {
-        // Table-Driven Configuration
         private static readonly Dictionary<Role, List<string>> _accessTable = new Dictionary<Role, List<string>>
         {
             { Role.Admin, new List<string> { "Kelola File PDF", "Manajemen Akun", "Koleksi Buku" } },

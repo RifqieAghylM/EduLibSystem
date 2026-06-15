@@ -8,10 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="MSTest" Version="4.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eduLib.API\eduLib.API.csproj" />
     <ProjectReference Include="..\eduLib.Application\eduLib.Application.csproj" />
     <ProjectReference Include="..\eduLib.Core\eduLib.Core.csproj" />
     <ProjectReference Include="..\eduLib.Infrastructure\eduLib.Infrastructure.csproj" />
