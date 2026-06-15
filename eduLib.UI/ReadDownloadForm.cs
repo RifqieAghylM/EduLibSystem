@@ -11,7 +11,6 @@ namespace eduLib.UI
 {
     public partial class ReadDownloadForm : Form
     {
-        // Sesuaikan URL ini dengan port saat backend kalian di-run
         private readonly string baseUrl = "http://localhost:5096/api/books";
 
         public ReadDownloadForm()
@@ -19,7 +18,7 @@ namespace eduLib.UI
             InitializeComponent();
         }
 
-        // --- 1. FITUR PENCARIAN BUKU ---
+        // fitur search buku
         private async void btnSearch_Click(object sender, EventArgs e)
         {
             string keyword = txtSearch.Text;
@@ -116,6 +115,12 @@ namespace eduLib.UI
                 }
             }
         }
+        // button kembali ke halaman sebelumnya
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            // Menutup halaman eksplorasi ini dan otomatis kembali ke Menu Utama yang memanggilnya
+            this.Close();
+        }
 
         // --- 3. FITUR BACA ONLINE (STREAM TO TEMP FILE) ---
         private async void btnRead_Click(object sender, EventArgs e)
@@ -198,6 +203,11 @@ namespace eduLib.UI
         }
 
         private void dgvBooks_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
 
         }

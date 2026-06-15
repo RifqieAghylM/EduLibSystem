@@ -16,7 +16,7 @@ namespace eduLib.API.Controllers
         public BooksController(IConfiguration config)
         {
             string mongoAtlasConnString = config.GetConnectionString("MongoAtlas"); // koneksi db
-             _repo = new MongoBookRepository(mongoAtlasConnString, "book");
+            _repo = new MongoBookRepository(mongoAtlasConnString, "book");
         }
         // fitur search
         [HttpGet("search")]
