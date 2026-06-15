@@ -50,7 +50,7 @@ namespace eduLib.UI
 
                         // Sembunyikan kolom ID agar UI lebih bersih
                         if (dgvBooks.Columns["Id"] != null) dgvBooks.Columns["Id"].Visible = false;
-                        if(dgvBooks.Columns["GridFsFileId"] != null) dgvBooks.Columns["GridFsFileId"].Visible = false;
+                        if (dgvBooks.Columns["GridFsFileId"] != null) dgvBooks.Columns["GridFsFileId"].Visible = false;
                     }
                     else
                     {
@@ -185,6 +185,21 @@ namespace eduLib.UI
                 return false;
             }
             return true;
+        }
+
+        private void ReadDownloadForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dgvBooks_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
