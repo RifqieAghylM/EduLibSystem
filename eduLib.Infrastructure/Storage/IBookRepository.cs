@@ -17,7 +17,7 @@ namespace eduLib.Infrastructure.Storage
 
         // --- Fitur Review ---
         Task<Review> AddReviewAsync(Review review);
-        Task<List<Review>> GetAllReviewsAsync();
+        Task<List<Review>> GetReviewsByBookTitleAsync(string title); // Ubah jadi ini!
 
         // --- Fitur Raka ---
         Task<byte[]> DownloadPdfAsync(string gridFsId);
