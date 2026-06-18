@@ -3,7 +3,8 @@ using eduLib.Core.Enums;
 using eduLib.Infrastructure.Storage;
 using Microsoft.AspNetCore.Mvc;
 using eduLib.Application.Auth;        
-using eduLib.Application.Tracking;               
+using eduLib.Application.Tracking;
+using System.Text.RegularExpressions;
 
 namespace eduLib.API.Controllers
 {
@@ -132,30 +133,91 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Buku beserta file PDF berhasil dihapus secara permanen." });
         }
 
-        // fitur tambah review
+        // --- 1. MEMBUAT REVIEW ---
         [HttpPost("review")]
-        public async Task<IActionResult> AddReview([FromForm] string username, [FromForm] string comment)
+        public async Task<IActionResult> AddReview([FromForm] string title, [FromForm] string username, [FromForm] string comment)
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(comment))
+            if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(username))
+                return BadRequest("Judul buku (title) dan Username wajib diisi!");
+
+            var hasLetterRegex = new Regex(@"[a-zA-Z]");
+            if (!hasLetterRegex.IsMatch(title) || !hasLetterRegex.IsMatch(username))
             {
-                return BadRequest("Username dan Comment tidak boleh kosong.");
+                return BadRequest("Input tidak boleh hanya berupa angka! Harus mengandung huruf.");
             }
+
+            var cleanTitle = title.Trim();
+
+            // 1. Ambil data kandidat buku dari database
+            var targetBook = await _repo.SearchBooksAsync(cleanTitle);
+
+            // 2. PERBAIKAN: Menggunakan '==' agar C# mengecek kapital secara MUTLAK (Case-Sensitive)
+            // Jika "Apakah ini" == "apakah ini", hasilnya akan FALSE (Buku dianggap tidak ketemu)
+            var book = targetBook.FirstOrDefault(b => b.Title == cleanTitle);
+
+            if (book == null)
+                return NotFound(new { Message = $"Buku dengan judul '{title}' tidak ditemukan di sistem. (Pastikan huruf kapital/kecil sudah benar)" });
+
             var newReview = new Review
             {
-                Username = username,
-                Comment = comment
-                // Date di-set otomatis di Repository
+                BookId = book.Id,
+                BookTitle = book.Title,
+                BookAuthor = book.Author,
+                BookYear = book.Year,
+                Username = username.Trim(),
+                Comment = comment,
+                Date = DateTime.UtcNow
             };
-            var result = await _repo.AddReviewAsync(newReview);
-            return Ok(new { Message = "Review berhasil ditambahkan!", Data = result });
+
+            await _repo.AddReviewAsync(newReview);
+            return Ok(new { Message = "Review berhasil disimpan!", Data = newReview });
         }
-        // fitur ambil semua review
-        [HttpGet("reviews")]
-        public async Task<IActionResult> GetReviews()
+
+        // --- 2. MENAMPILKAN REVIEW ---
+        [HttpGet("{title}/reviews")]
+        public async Task<IActionResult> GetBookReviews([FromRoute] string title)
         {
-            var reviews = await _repo.GetAllReviewsAsync();
-            return Ok(reviews);
+            if (string.IsNullOrWhiteSpace(title))
+                return BadRequest("Masukkan judul buku untuk melihat ulasannya.");
+
+            var hasLetterRegex = new Regex(@"[a-zA-Z]");
+            if (!hasLetterRegex.IsMatch(title))
+            {
+                return BadRequest("Input judul tidak boleh hanya berupa angka. Harus mengandung huruf.");
+            }
+
+            var cleanTitle = title.Trim();
+
+            // 1. Ambil data kandidat buku dari database
+            var targetBook = await _repo.SearchBooksAsync(cleanTitle);
+
+            // 2. PERBAIKAN: Menggunakan '==' agar pencarian review juga wajib sama persis kapitalnya
+            var book = targetBook.FirstOrDefault(b => b.Title == cleanTitle);
+
+            if (book == null)
+            {
+                return NotFound(new { Message = $"Buku dengan judul '{title}' tidak ditemukan di dalam sistem. (Pastikan huruf kapital/kecil sudah benar)" });
+            }
+
+            // 3. Ambil review berdasarkan judul buku yang dicari client
+            var reviews = await _repo.GetReviewsByBookTitleAsync(cleanTitle);
+
+            var formattedResult = reviews.Select(r => new {
+                IdReview = r.Id,
+                Username = r.Username,
+                Comment = r.Comment,
+                Date = r.Date,
+                BookDetails = new
+                {
+                    Title = r.BookTitle,
+                    Author = r.BookAuthor,
+                    Year = r.BookYear
+                }
+            });
+
+            return Ok(formattedResult);
         }
+
         [HttpGet("download/{gridFsId}")] // fitur download buku
         public async Task<IActionResult> DownloadBookPdf(string gridFsId)
         {
