@@ -14,11 +14,11 @@ namespace eduLib.Tests.TrackingTests
         {
             var machine = new ReadingStateMachine();
 
-            // Act 1: Mulai membaca
+            // mulai membaca
             machine.UpdateProgress(10, 100);
             Assert.AreEqual(ReadingState.Reading, machine.CurrentState);
 
-            // Act 2: Selesai membaca
+            // selesai membaca
             machine.UpdateProgress(100, 100);
             Assert.AreEqual(ReadingState.Completed, machine.CurrentState);
         }
@@ -28,7 +28,7 @@ namespace eduLib.Tests.TrackingTests
         {
             var manager = new BookmarkManager();
 
-            // Menggunakan Try-Catch-Fail untuk menguji Defensive Programming
+            // menggunakan Try-Catch-Fail untuk menguji Defensive Programming
             try
             {
                 manager.SaveBookmark("B001", -5);
@@ -36,7 +36,7 @@ namespace eduLib.Tests.TrackingTests
             }
             catch (ArgumentException)
             {
-                // Sukses: Exception yang tepat dilempar
+                
             }
         }
 
@@ -61,13 +61,19 @@ namespace eduLib.Tests.TrackingTests
         public void Profiling_Tracking_DictionaryLoad()
         {
             var manager = new BookmarkManager();
+            var sw = Stopwatch.StartNew();
 
             // Stress test: Menulis dan menimpa (update/insert) 500.000 data ke struktur Table-driven
             for (int i = 0; i < 500000; i++)
             {
-                // Menyimpan bookmark dengan page yang berganti-ganti
                 manager.SaveBookmark("Buku_ID_" + i, i % 100);
             }
+
+            sw.Stop();
+
+            // 500.000 operasi Dictionary harus selesai di bawah 500ms
+            Assert.IsTrue(sw.ElapsedMilliseconds < 500,
+                $"Stress test terlalu lambat: {sw.ElapsedMilliseconds}ms (batas: 500ms)");
         }
     }
 }
