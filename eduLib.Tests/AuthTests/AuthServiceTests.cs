@@ -18,9 +18,8 @@ namespace eduLib.Tests.AuthTests
         {
             _mockDb = new List<User>
         {
-            new User { Username = "azka_admin", Password = "123", UserRole = Role.Admin },
-            new User { Username = "rifqie_pelajar", Password = "abc", UserRole = Role.Pelajar },
-            new User { Username = "guru", Password = "456", UserRole = Role.Guru }
+            new User { Username = "azka_admin",  Password = "123", UserRole = Role.Admin },
+            new User { Username = "rifqie_user", Password = "abc", UserRole = Role.User  }
         };
             _authService = new AuthService(_mockDb);
         }
@@ -30,6 +29,17 @@ namespace eduLib.Tests.AuthTests
         {
             // Act
             var user = _authService.Login("azka_admin", "123");
+
+            // Assert
+            Assert.IsNotNull(user);
+            Assert.AreEqual(SessionState.LoggedIn, _authService.GetCurrentState());
+        }
+
+        [TestMethod]
+        public void Login_UsernameCapital_StillLogsIn()
+        {
+            // Act
+            var user = _authService.Login("AZKA_ADMIN", "123");
 
             // Assert
             Assert.IsNotNull(user);
@@ -120,16 +130,12 @@ namespace eduLib.Tests.AuthTests
         [TestMethod]
         public void Profiling_Auth_StateAndMenuAllocation()
         {
-            // Stress test: Melakukan transisi Automata dan Table-driven sebanyak 100.000 kali
-            // Ini akan memicu grafik CPU dan alokasi memori
             for (int i = 0; i < 100000; i++)
             {
-                var user = new User { Username = "user" + i, Password = "123", UserRole = Role.Pelajar };
+                var user = new User { Username = "user" + i, Password = "123", UserRole = Role.User }; // ← fix di sini
 
-                // Memanggil Table-Driven
                 var menus = RoleAccessTable.GetAccessibleMenus(user.UserRole);
 
-                // Memanggil Automata
                 _authService.Login("azka_admin", "123");
                 _authService.Logout();
             }
