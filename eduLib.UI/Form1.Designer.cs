@@ -5,6 +5,12 @@
         private System.ComponentModel.IContainer components = null;
 
         private System.Windows.Forms.Label lblTitle;
+
+        private System.Windows.Forms.Label lblSearch;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.DataGridView dgvBooks;
+
         private System.Windows.Forms.Label lblBookId;
         private System.Windows.Forms.TextBox txtBookId;
 
@@ -34,6 +40,12 @@
         private void InitializeComponent()
         {
             this.lblTitle = new System.Windows.Forms.Label();
+
+            this.lblSearch = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.dgvBooks = new System.Windows.Forms.DataGridView();
+
             this.lblBookId = new System.Windows.Forms.Label();
             this.txtBookId = new System.Windows.Forms.TextBox();
 
@@ -54,6 +66,7 @@
             this.lblProgressResult = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
 
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).BeginInit();
             this.grpBookmark.SuspendLayout();
             this.grpProgress.SuspendLayout();
             this.SuspendLayout();
@@ -64,20 +77,48 @@
             this.lblTitle.Location = new System.Drawing.Point(30, 20);
             this.lblTitle.AutoSize = true;
 
-            // ===== Book ID =====
-            this.lblBookId.Text = "Book ID:";
+            // ===== Search Buku =====
+            this.lblSearch.Text = "Cari Buku:";
+            this.lblSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblSearch.Location = new System.Drawing.Point(30, 75);
+            this.lblSearch.AutoSize = true;
+
+            this.txtSearch.Location = new System.Drawing.Point(150, 72);
+            this.txtSearch.Width = 400;
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            this.btnSearch.Text = "Cari";
+            this.btnSearch.Location = new System.Drawing.Point(560, 70);
+            this.btnSearch.Size = new System.Drawing.Size(90, 30);
+            this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+
+            this.dgvBooks.Location = new System.Drawing.Point(30, 110);
+            this.dgvBooks.Size = new System.Drawing.Size(720, 130);
+            this.dgvBooks.ReadOnly = true;
+            this.dgvBooks.AllowUserToAddRows = false;
+            this.dgvBooks.AllowUserToDeleteRows = false;
+            this.dgvBooks.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvBooks.MultiSelect = false;
+            this.dgvBooks.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvBooks.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBooks_CellClick);
+
+            // ===== Book ID (read-only, hanya terisi lewat klik tabel) =====
+            this.lblBookId.Text = "Book ID terpilih:";
             this.lblBookId.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBookId.Location = new System.Drawing.Point(30, 75);
+            this.lblBookId.Location = new System.Drawing.Point(30, 255);
             this.lblBookId.AutoSize = true;
 
-            this.txtBookId.Location = new System.Drawing.Point(150, 72);
-            this.txtBookId.Width = 500;
+            this.txtBookId.Location = new System.Drawing.Point(170, 252);
+            this.txtBookId.Width = 480;
             this.txtBookId.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtBookId.ReadOnly = true;
+            this.txtBookId.BackColor = System.Drawing.SystemColors.Control;
 
             // ===== Bookmark Group =====
             this.grpBookmark.Text = "Bookmark";
             this.grpBookmark.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.grpBookmark.Location = new System.Drawing.Point(30, 120);
+            this.grpBookmark.Location = new System.Drawing.Point(30, 295);
             this.grpBookmark.Size = new System.Drawing.Size(720, 160);
 
             this.lblBookmarkPage.Text = "Halaman:";
@@ -105,6 +146,7 @@
             this.lblBookmarkResult.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblBookmarkResult.Location = new System.Drawing.Point(20, 120);
             this.lblBookmarkResult.AutoSize = true;
+            this.lblBookmarkResult.MaximumSize = new System.Drawing.Size(680, 0);
             this.lblBookmarkResult.ForeColor = System.Drawing.Color.DarkBlue;
 
             this.grpBookmark.Controls.Add(this.lblBookmarkPage);
@@ -116,7 +158,7 @@
             // ===== Reading Progress Group =====
             this.grpProgress.Text = "Reading Progress";
             this.grpProgress.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.grpProgress.Location = new System.Drawing.Point(30, 300);
+            this.grpProgress.Location = new System.Drawing.Point(30, 470);
             this.grpProgress.Size = new System.Drawing.Size(720, 250);
 
             this.lblCurrentPage.Text = "Halaman saat ini:";
@@ -152,7 +194,7 @@
             this.lblProgressResult.Text = "Status: -";
             this.lblProgressResult.Location = new System.Drawing.Point(20, 130);
             this.lblProgressResult.AutoSize = true;
-            this.lblProgressResult.ForeColor = System.Drawing.Color.DarkGreen;
+            this.lblProgressResult.ForeColor = System.Drawing.Color.Black;
             this.lblProgressResult.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
 
             this.progressBar1.Location = new System.Drawing.Point(20, 170);
@@ -168,14 +210,21 @@
             this.grpProgress.Controls.Add(this.progressBar1);
 
             // ===== Form =====
-            this.ClientSize = new System.Drawing.Size(800, 600);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(800, 760);
             this.Text = "eduLib - Bookmark & Reading Progress";
+
             this.Controls.Add(this.lblTitle);
+            this.Controls.Add(this.lblSearch);
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.btnSearch);
+            this.Controls.Add(this.dgvBooks);
             this.Controls.Add(this.lblBookId);
             this.Controls.Add(this.txtBookId);
             this.Controls.Add(this.grpBookmark);
             this.Controls.Add(this.grpProgress);
 
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).EndInit();
             this.grpBookmark.ResumeLayout(false);
             this.grpProgress.ResumeLayout(false);
             this.ResumeLayout(false);
