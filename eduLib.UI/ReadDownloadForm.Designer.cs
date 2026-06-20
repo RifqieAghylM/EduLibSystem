@@ -68,6 +68,8 @@
             dgvBooks.MultiSelect = false;
             dgvBooks.Name = "dgvBooks";
             dgvBooks.ReadOnly = true;
+            dgvBooks.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvBooks.RowHeadersVisible = false;
             dgvBooks.RowHeadersWidth = 51;
             dgvBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvBooks.Size = new Size(733, 349);

@@ -1,11 +1,4 @@
 ﻿using Microsoft.Web.WebView2.WinForms;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace eduLib.UI
 {
@@ -17,8 +10,8 @@ namespace eduLib.UI
         {
             InitializeComponent();
             this._filePath = filePath;
-            this.Text = $"Membaca: {bookTitle} (Mode HD)";
-            this.Width = 1000; // Kita lebarkan sedikit agar puas bacanya
+            this.Text = $"Reading: {bookTitle}";
+            this.Width = 1000;
             this.Height = 750;
             this.StartPosition = FormStartPosition.CenterScreen;
 

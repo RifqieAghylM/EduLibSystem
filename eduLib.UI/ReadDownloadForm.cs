@@ -1,17 +1,11 @@
 ﻿using eduLib.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
 using System.Text.Json;
-using System.Windows.Forms;
 
 namespace eduLib.UI
 {
     public partial class ReadDownloadForm : Form
     {
-        private readonly string baseUrl = "http://localhost:5096/api/books";
+        private readonly string baseUrl = "https://localhost:7053/api/books";
 
         public ReadDownloadForm()
         {
@@ -157,7 +151,7 @@ namespace eduLib.UI
                     }
                     else
                     {
-                        // BARIS INI YANG DITAMBAHKAN UNTUK MENGECEK ALASAN PENOLAKAN API
+                        // cek error dari API
                         string errorDetails = await response.Content.ReadAsStringAsync();
                         MessageBox.Show($"API Menolak Request!\nStatus: {response.StatusCode}\nDetail: {errorDetails}", "Error dari Server");
                     }
@@ -169,7 +163,7 @@ namespace eduLib.UI
             }
         }
 
-        // --- FUNGSI BANTUAN UNTUK CEK PILIHAN TABEL ---
+        // cek apakah buku terpilih dan memiliki file PDF terkait di database
         private bool IsBookSelected(out string gridFsId, out string title)
         {
             gridFsId = string.Empty;
