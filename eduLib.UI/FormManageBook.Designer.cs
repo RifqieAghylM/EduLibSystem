@@ -87,8 +87,7 @@
             // 
             // FormManageBook
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(778, 544);
             Controls.Add(btnback);
             Controls.Add(btneditbuku);
