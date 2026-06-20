@@ -10,7 +10,7 @@ namespace eduLib.UI
     {
         private readonly HttpClient _client = new HttpClient();
 
-       
+
         private const string BaseUrl = "https://localhost:7053/api/Tracking";
 
         public Form1()
@@ -151,6 +151,16 @@ namespace eduLib.UI
                 return false;
             }
             return true;
+        }
+
+        private void txtBookId_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblBookmarkResult_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
