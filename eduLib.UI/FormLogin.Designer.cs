@@ -60,7 +60,7 @@
             // lblpassword
             // 
             lblpassword.AutoSize = true;
-            lblpassword.Location = new Point(142, 260);
+            lblpassword.Location = new Point(140, 260);
             lblpassword.Name = "lblpassword";
             lblpassword.Size = new Size(96, 25);
             lblpassword.TabIndex = 2;
