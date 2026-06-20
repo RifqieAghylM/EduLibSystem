@@ -16,7 +16,7 @@ namespace eduLib.API.Controllers
         public BooksController(IConfiguration config)
         {
             string mongoAtlasConnString = config.GetConnectionString("MongoAtlas"); // koneksi db
-             _repo = new MongoBookRepository(mongoAtlasConnString, "book");
+            _repo = new MongoBookRepository(mongoAtlasConnString, "book");
         }
         // fitur search
         [HttpGet("search")]
@@ -234,28 +234,11 @@ namespace eduLib.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromQuery] string username, [FromQuery] string password)
         {
-            // Dummy user list sesuai logic Azka
             var users = new List<User>
-    {
-        new User
         {
-            Username = "admin",
-            Password = "Admin123",
-            UserRole = Role.Admin
-        },
-        new User
-        {
-            Username = "guru",
-            Password = "Guru123",
-            UserRole = Role.Guru
-        },
-        new User
-        {
-            Username = "pelajar",
-            Password = "Pelajar123",
-            UserRole = Role.Pelajar
-        }
-    };
+            new User { Username = "admin", Password = "admin123", UserRole = Role.Admin },
+            new User { Username = "user",  Password = "user123",  UserRole = Role.User  }
+        };
 
             var auth = new AuthService(users);
             try
