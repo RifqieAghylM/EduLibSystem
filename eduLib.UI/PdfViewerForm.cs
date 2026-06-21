@@ -7,7 +7,6 @@ namespace eduLib.UI
 {
     public partial class PdfViewerForm : Form
     {
-        // Ganti WebView2 dengan WebBrowser bawaan Windows .NET Framework (Anti-Blank)
         private WebView2 webBrowser;
         private string _filePath;
 
@@ -20,12 +19,10 @@ namespace eduLib.UI
             this.Height = 750;
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Inisialisasi Kontrol WebBrowser Standar
             webBrowser = new WebView2();
             webBrowser.Dock = DockStyle.Fill;
             this.Controls.Add(webBrowser);
 
-            // Jalankan penayangan dokumen
             InitializePdfView(filePath);
         }
 
@@ -33,7 +30,6 @@ namespace eduLib.UI
         {
             try
             {
-                // validasi file PDF sebelum ditampilkan
                 if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0)
                 {
                     MessageBox.Show("File PDF tidak ditemukan atau datanya kosong dari server API!",
@@ -60,7 +56,6 @@ namespace eduLib.UI
         {
             try
             {
-                // Bersihkan komponen dari memori RAM
                 if (webBrowser != null)
                 {
                     webBrowser.Dispose();

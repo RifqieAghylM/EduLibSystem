@@ -36,32 +36,26 @@ namespace eduLib.UI
             this.Hide();
         }
 
-        // ── REVIEW ──
         private void btnreview_Click(object sender, EventArgs e)
         {
-            // 1. Buat objek FormReview sambil melempar parameter role "Admin"
             FormReview reviewPage = new FormReview("Admin");
 
             reviewPage.FormClosed += (s, args) => this.Show();
 
-            // 2. Set posisi agar muncul di tengah layar
             reviewPage.StartPosition = FormStartPosition.CenterScreen;
 
-            // 3. Tampilkan form review milikmu
             reviewPage.Show();
 
-            // 4. Sembunyikan Dashboard Admin agar UI tidak menumpuk berantakan
             this.Hide();
         }
 
         private void btnbookmark_Click(object sender, EventArgs e)
         {
-            // Panggil FormBookmark dengan menyertakan parameter Admin
             FormBookmark bookmarkPage = new FormBookmark("Admin");
             bookmarkPage.FormClosed += (s, args) => this.Show();
             bookmarkPage.StartPosition = FormStartPosition.CenterScreen;
             bookmarkPage.Show();
-            this.Hide(); // Sembunyikan dashboard utama
+            this.Hide();
         }
 
         private void btnlogout_Click(object sender, EventArgs e)

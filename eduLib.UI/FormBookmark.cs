@@ -14,11 +14,8 @@ namespace eduLib.UI
         private readonly string ApiBaseUrl = ApiHelper.GetBaseUrl();
         private bool _isBookSelectedFromTable = false;
 
-        // 1. Variabel global untuk menyimpan peran pengakses
         private string _currentUserRole;
 
-        // 2. Konstruktor menerima parameter role ("Admin" atau "User")
-        // Pastikan di file FormBookmark.cs bentuknya seperti ini:
         public FormBookmark(string userRole)
         {
             InitializeComponent();
@@ -26,14 +23,11 @@ namespace eduLib.UI
             this.FormClosed += (s, args) => this.Dispose();
         }
 
-        // 4. PERBAIKAN LOGIKA TOMBOL BACK DINAMIS (Bukan cuma Close lagi!)
         private void btnBackDashboard_Click(object sender, EventArgs e)
         {
-            // Tutup halaman bookmark saat ini
             this.Close();
         }
 
-        // ===== SEARCH BUKU (SUDAH FIX BUG URL GANDA) =====
         private async void btnSearch_Click(object sender, EventArgs e)
         {
             var keyword = txtSearch.Text.Trim();
@@ -47,7 +41,6 @@ namespace eduLib.UI
 
             try
             {
-                // PERBAIKAN: Deteksi otomatis agar kata "/Books" tidak tumpuk ganda di URL
                 string url;
                 if (ApiBaseUrl.EndsWith("/Books", StringComparison.OrdinalIgnoreCase))
                 {
@@ -111,7 +104,6 @@ namespace eduLib.UI
             progressBar1.Value = 0;
         }
 
-        // ===== BOOKMARK =====
         private async void btnSaveBookmark_Click(object sender, EventArgs e)
         {
             if (!ValidateBookSelected(lblBookmarkResult)) return;
@@ -129,7 +121,6 @@ namespace eduLib.UI
 
             try
             {
-                // PERBAIKAN: Menyesuaikan route path tracking agar tetap merujuk base URL murni jika ada "/Books"
                 string baseUrlMurni = ApiBaseUrl.Replace("/Books", "");
                 var url = $"{baseUrlMurni}/Tracking/bookmark?bookId={Uri.EscapeDataString(txtBookId.Text)}&page={page}";
                 var response = await _client.PostAsync(url, null);
@@ -173,7 +164,6 @@ namespace eduLib.UI
             }
         }
 
-        // ===== READING PROGRESS =====
         private async void btnUpdateProgress_Click(object sender, EventArgs e)
         {
             if (!ValidateBookSelected(lblProgressResult)) return;

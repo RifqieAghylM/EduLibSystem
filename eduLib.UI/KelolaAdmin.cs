@@ -14,13 +14,12 @@ namespace eduLib.UI
 {
     public partial class KelolaAdmin : Form
     {
-        private readonly string BASE_URL = ApiHelper.GetBaseUrl(); //mengambil url dari config runtime di appsetting json
+        private readonly string BASE_URL = ApiHelper.GetBaseUrl();
         public KelolaAdmin()
         {
             InitializeComponent();
         }
 
-        // Event handler untuk tombol "Cari"
         private async void buttonCari_Click(object sender, EventArgs e)
         {
 
@@ -35,7 +34,7 @@ namespace eduLib.UI
 
                 return;
             }
-            buttonCari.Enabled = false; // matikan tombol sementara menunggu hasil pencarian
+            buttonCari.Enabled = false;
             buttonCari.Text = "Mencari...";
 
 
@@ -43,8 +42,6 @@ namespace eduLib.UI
             {
                 string url = $"{BASE_URL}/search?keyword={keyword}";
 
-                //IMPLEMENTASI PARAMETERIZATION / GENERICS
-                // Menggunakan method generic <Book> dari ApiHelper
                 List<Book> books = await ApiHelper.GetListAsync<Book>(url);
 
 
@@ -54,7 +51,6 @@ namespace eduLib.UI
                     dataGridViewBuku.Columns.Clear();
                     dataGridViewBuku.DataSource = books;
 
-                    // Menyembunyikan kolom yang tidak perlu ditampilkan ke user
                     if (dataGridViewBuku.Columns["Id"] != null)
                         dataGridViewBuku.Columns["Id"].Visible = false;
                     if (dataGridViewBuku.Columns["PdfPath"] != null)
@@ -77,22 +73,17 @@ namespace eduLib.UI
             }
             finally
             {
-                // Clean Code: Nyalakan kembali tombol setelah selesai
                 buttonCari.Enabled = true;
                 buttonCari.Text = "Cari";
             }
         }
-        // Method untuk menambahkan kolom tombol "Edit" dan "Delete" ke DataGridView
         private void AddButtonColumns()
         {
-
-
             if (dataGridViewBuku.Columns["Edit"] == null)
             {
 
                 DataGridViewButtonColumn edit =
                     new DataGridViewButtonColumn();
-
 
                 edit.Name = "Edit";
 
@@ -102,18 +93,14 @@ namespace eduLib.UI
 
                 edit.UseColumnTextForButtonValue = true;
 
-
                 dataGridViewBuku.Columns.Add(edit);
-
 
             }
 
             if (dataGridViewBuku.Columns["Delete"] == null)
             {
-
                 DataGridViewButtonColumn delete =
                     new DataGridViewButtonColumn();
-
 
                 delete.Name = "Delete";
 
@@ -123,12 +110,9 @@ namespace eduLib.UI
 
                 delete.UseColumnTextForButtonValue = true;
                 dataGridViewBuku.Columns.Add(delete);
-
-
             }
-
         }
-        // Event handler untuk klik pada sel di DataGridView (untuk Edit dan Delete)
+
         private async void dataGridViewBuku_CellContentClick( object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
@@ -136,7 +120,6 @@ namespace eduLib.UI
 
             Book selected = (Book)dataGridViewBuku.Rows[e.RowIndex].DataBoundItem;
 
-            // EDIT
             if (dataGridViewBuku.Columns[e.ColumnIndex].Name == "Edit")
             {
                using  EduLibAdmin1 frm =
@@ -152,17 +135,11 @@ namespace eduLib.UI
                         selected.Year
 
                     );
-
-
                 frm.ShowDialog();
-                // Opsional: Otomatis mencari ulang setelah form edit ditutup agar data refresh
-                // buttonCari.PerformClick();
 
                 return;
-
             }
 
-            // DELETE
             if (dataGridViewBuku.Columns[e.ColumnIndex].Name == "Delete")
             {
 
@@ -236,7 +213,6 @@ namespace eduLib.UI
             }
 
         }
-        // Event handler untuk tombol "Kembali"
         private void buttonBack_Click(object sender, EventArgs e)
         {
             this.Close();
