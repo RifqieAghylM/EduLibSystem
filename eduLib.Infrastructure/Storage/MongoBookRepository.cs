@@ -1,4 +1,4 @@
-﻿    using eduLib.Core.Entities;
+﻿using eduLib.Core.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
@@ -88,20 +88,18 @@ namespace eduLib.Infrastructure.Storage
         // --- FITUR REVIEW: Tambah Review Baru ---
         public async Task<Review> AddReviewAsync(Review review)
         {
-            // Set waktu saat ini (UTC) agar sesuai dengan format di MongoDB
             review.Date = DateTime.UtcNow;
-
             await _reviewsCollection.InsertOneAsync(review);
             return review;
         }
 
-        // --- FITUR REVIEW: Ambil Semua Review ---
-        public async Task<List<Review>> GetAllReviewsAsync()
+        // --- FITUR REVIEW: Ambil Semua Review Berdasarkan Judul Buku ---
+        public async Task<List<Review>> GetReviewsByBookTitleAsync(string title)
         {
-            // Mengambil semua review dan mengurutkannya dari yang terbaru
-            return await _reviewsCollection.Find(_ => true)
-                                           .SortByDescending(r => r.Date)
-                                           .ToListAsync();
+            var filter = Builders<Review>.Filter.Regex(r => r.BookTitle, new BsonRegularExpression(title, "i"));
+
+            // Format bertingkat yang valid untuk MongoDB Driver C#
+            return await _reviewsCollection.Find(filter).SortByDescending(r => r.Date).ToListAsync();
         }
         // fitur download
         public async Task<byte[]> DownloadPdfAsync(string gridFsId)

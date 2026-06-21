@@ -36,7 +36,6 @@ namespace eduLib.Application.Auth
                 throw new InvalidOperationException("Akun terkunci karena terlalu banyak percobaan gagal.");
             }
 
-
             var user = _mockDatabase.FirstOrDefault(u =>
                 u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)
                 && u.Password == password);

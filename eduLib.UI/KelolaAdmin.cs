@@ -140,7 +140,6 @@ namespace eduLib.UI
             }
 
 
-
             buttonCari.Enabled = true;
 
             buttonCari.Text = "Cari";

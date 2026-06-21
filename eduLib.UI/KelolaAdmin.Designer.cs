@@ -78,6 +78,7 @@
             // 
             // dataGridViewBuku
             // 
+            dataGridViewBuku.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewBuku.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewBuku.Location = new Point(21, 192);
             dataGridViewBuku.Name = "dataGridViewBuku";
