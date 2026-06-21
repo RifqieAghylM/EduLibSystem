@@ -3,18 +3,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Forms;
+using eduLib.Core.Entities;
 
 namespace eduLib.UI
 {
-    // Model sederhana untuk menampung hasil pencarian buku dari API
-    public class BookResult
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Title { get; set; } = string.Empty;
-        public string Author { get; set; } = string.Empty;
-        public int Year { get; set; }
-    }
-
     public partial class Form1 : Form
     {
         private readonly HttpClient _client = new HttpClient();
@@ -56,10 +48,14 @@ namespace eduLib.UI
                     return;
                 }
 
-                var books = JsonSerializer.Deserialize<List<BookResult>>(json,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<BookResult>();
+                var books = JsonSerializer.Deserialize<List<Book>>(json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Book>();
 
                 dgvBooks.DataSource = books;
+
+                // Sembunyikan kolom yang tidak relevan ditampilkan ke user
+                HideColumnIfExists("PdfPath");
+                HideColumnIfExists("GridFsFileId");
 
                 if (books.Count == 0)
                 {
@@ -72,10 +68,16 @@ namespace eduLib.UI
             }
         }
 
+        private void HideColumnIfExists(string columnName)
+        {
+            if (dgvBooks.Columns.Contains(columnName))
+                dgvBooks.Columns[columnName].Visible = false;
+        }
+
         private void dgvBooks_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-            if (dgvBooks.Rows[e.RowIndex].DataBoundItem is not BookResult selectedBook) return;
+            if (dgvBooks.Rows[e.RowIndex].DataBoundItem is not Book selectedBook) return;
 
             txtBookId.Text = selectedBook.Id;
             _isBookSelectedFromTable = true;

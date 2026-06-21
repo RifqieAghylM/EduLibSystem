@@ -71,82 +71,84 @@
             this.grpProgress.SuspendLayout();
             this.SuspendLayout();
 
-            // ===== Title =====
-            this.lblTitle.Text = "eduLib - Book Tracking";
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.Location = new System.Drawing.Point(30, 20);
+            //  Title  
+            this.lblTitle.Text = "Book Tracking";
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Location = new System.Drawing.Point(20, 10);
             this.lblTitle.AutoSize = true;
 
-            // ===== Search Buku =====
+            //  Search Buku 
             this.lblSearch.Text = "Cari Buku:";
-            this.lblSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblSearch.Location = new System.Drawing.Point(30, 75);
+            this.lblSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblSearch.Location = new System.Drawing.Point(20, 48);
             this.lblSearch.AutoSize = true;
 
-            this.txtSearch.Location = new System.Drawing.Point(150, 72);
-            this.txtSearch.Width = 400;
-            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtSearch.Location = new System.Drawing.Point(120, 45);
+            this.txtSearch.Width = 540;
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
 
             this.btnSearch.Text = "Cari";
-            this.btnSearch.Location = new System.Drawing.Point(560, 70);
-            this.btnSearch.Size = new System.Drawing.Size(90, 30);
+            this.btnSearch.Location = new System.Drawing.Point(670, 43);
+            this.btnSearch.Size = new System.Drawing.Size(90, 26);
             this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
 
-            this.dgvBooks.Location = new System.Drawing.Point(30, 110);
-            this.dgvBooks.Size = new System.Drawing.Size(720, 130);
+            //  Tabel hasil pencarian
+            this.dgvBooks.Location = new System.Drawing.Point(20, 75);
+            this.dgvBooks.Size = new System.Drawing.Size(740, 105);
             this.dgvBooks.ReadOnly = true;
             this.dgvBooks.AllowUserToAddRows = false;
             this.dgvBooks.AllowUserToDeleteRows = false;
             this.dgvBooks.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvBooks.MultiSelect = false;
             this.dgvBooks.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvBooks.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.dgvBooks.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBooks_CellClick);
 
-            // ===== Book ID (read-only, hanya terisi lewat klik tabel) =====
+            //  Book ID terpilih (read-only) 
             this.lblBookId.Text = "Book ID terpilih:";
-            this.lblBookId.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBookId.Location = new System.Drawing.Point(30, 255);
+            this.lblBookId.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblBookId.Location = new System.Drawing.Point(20, 191);
             this.lblBookId.AutoSize = true;
 
-            this.txtBookId.Location = new System.Drawing.Point(170, 252);
-            this.txtBookId.Width = 480;
-            this.txtBookId.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtBookId.Location = new System.Drawing.Point(150, 188);
+            this.txtBookId.Width = 610;
+            this.txtBookId.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtBookId.ReadOnly = true;
             this.txtBookId.BackColor = System.Drawing.SystemColors.Control;
 
-            // ===== Bookmark Group =====
+            //  Bookmark Group
             this.grpBookmark.Text = "Bookmark";
-            this.grpBookmark.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.grpBookmark.Location = new System.Drawing.Point(30, 295);
-            this.grpBookmark.Size = new System.Drawing.Size(720, 160);
+            this.grpBookmark.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.grpBookmark.Location = new System.Drawing.Point(20, 218);
+            this.grpBookmark.Size = new System.Drawing.Size(740, 120);
 
             this.lblBookmarkPage.Text = "Halaman:";
-            this.lblBookmarkPage.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBookmarkPage.Location = new System.Drawing.Point(20, 35);
+            this.lblBookmarkPage.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblBookmarkPage.Location = new System.Drawing.Point(15, 28);
             this.lblBookmarkPage.AutoSize = true;
 
-            this.txtBookmarkPage.Location = new System.Drawing.Point(120, 32);
-            this.txtBookmarkPage.Width = 120;
-            this.txtBookmarkPage.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtBookmarkPage.Location = new System.Drawing.Point(100, 25);
+            this.txtBookmarkPage.Width = 110;
+            this.txtBookmarkPage.Font = new System.Drawing.Font("Segoe UI", 9F);
 
             this.btnSaveBookmark.Text = "Simpan Bookmark";
-            this.btnSaveBookmark.Location = new System.Drawing.Point(20, 75);
-            this.btnSaveBookmark.Size = new System.Drawing.Size(180, 35);
-            this.btnSaveBookmark.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSaveBookmark.Location = new System.Drawing.Point(15, 58);
+            this.btnSaveBookmark.Size = new System.Drawing.Size(160, 30);
+            this.btnSaveBookmark.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.btnSaveBookmark.Click += new System.EventHandler(this.btnSaveBookmark_Click);
 
             this.btnGetBookmark.Text = "Lihat Bookmark";
-            this.btnGetBookmark.Location = new System.Drawing.Point(210, 75);
-            this.btnGetBookmark.Size = new System.Drawing.Size(180, 35);
-            this.btnGetBookmark.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnGetBookmark.Location = new System.Drawing.Point(185, 58);
+            this.btnGetBookmark.Size = new System.Drawing.Size(160, 30);
+            this.btnGetBookmark.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.btnGetBookmark.Click += new System.EventHandler(this.btnGetBookmark_Click);
 
             this.lblBookmarkResult.Text = "Hasil: -";
-            this.lblBookmarkResult.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblBookmarkResult.Location = new System.Drawing.Point(20, 120);
+            this.lblBookmarkResult.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblBookmarkResult.Location = new System.Drawing.Point(15, 95);
             this.lblBookmarkResult.AutoSize = true;
-            this.lblBookmarkResult.MaximumSize = new System.Drawing.Size(680, 0);
+            this.lblBookmarkResult.MaximumSize = new System.Drawing.Size(700, 0);
             this.lblBookmarkResult.ForeColor = System.Drawing.Color.DarkBlue;
 
             this.grpBookmark.Controls.Add(this.lblBookmarkPage);
@@ -155,50 +157,50 @@
             this.grpBookmark.Controls.Add(this.btnGetBookmark);
             this.grpBookmark.Controls.Add(this.lblBookmarkResult);
 
-            // ===== Reading Progress Group =====
+            //  Reading Progress Group 
             this.grpProgress.Text = "Reading Progress";
-            this.grpProgress.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.grpProgress.Location = new System.Drawing.Point(30, 470);
-            this.grpProgress.Size = new System.Drawing.Size(720, 250);
+            this.grpProgress.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.grpProgress.Location = new System.Drawing.Point(20, 348);
+            this.grpProgress.Size = new System.Drawing.Size(740, 230);
 
             this.lblCurrentPage.Text = "Halaman saat ini:";
-            this.lblCurrentPage.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblCurrentPage.Location = new System.Drawing.Point(20, 35);
+            this.lblCurrentPage.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblCurrentPage.Location = new System.Drawing.Point(15, 30);
             this.lblCurrentPage.AutoSize = true;
 
-            this.txtCurrentPage.Location = new System.Drawing.Point(180, 32);
-            this.txtCurrentPage.Width = 120;
-            this.txtCurrentPage.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtCurrentPage.Location = new System.Drawing.Point(160, 27);
+            this.txtCurrentPage.Width = 110;
+            this.txtCurrentPage.Font = new System.Drawing.Font("Segoe UI", 9F);
 
             this.lblTotalPage.Text = "Total halaman:";
-            this.lblTotalPage.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblTotalPage.Location = new System.Drawing.Point(330, 35);
+            this.lblTotalPage.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblTotalPage.Location = new System.Drawing.Point(300, 30);
             this.lblTotalPage.AutoSize = true;
 
-            this.txtTotalPage.Location = new System.Drawing.Point(470, 32);
-            this.txtTotalPage.Width = 120;
-            this.txtTotalPage.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtTotalPage.Location = new System.Drawing.Point(430, 27);
+            this.txtTotalPage.Width = 110;
+            this.txtTotalPage.Font = new System.Drawing.Font("Segoe UI", 9F);
 
             this.btnUpdateProgress.Text = "Update Progress";
-            this.btnUpdateProgress.Location = new System.Drawing.Point(20, 80);
-            this.btnUpdateProgress.Size = new System.Drawing.Size(180, 35);
-            this.btnUpdateProgress.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnUpdateProgress.Location = new System.Drawing.Point(15, 65);
+            this.btnUpdateProgress.Size = new System.Drawing.Size(160, 30);
+            this.btnUpdateProgress.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.btnUpdateProgress.Click += new System.EventHandler(this.btnUpdateProgress_Click);
 
             this.btnGetProgress.Text = "Lihat Progress";
-            this.btnGetProgress.Location = new System.Drawing.Point(210, 80);
-            this.btnGetProgress.Size = new System.Drawing.Size(180, 35);
-            this.btnGetProgress.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnGetProgress.Location = new System.Drawing.Point(185, 65);
+            this.btnGetProgress.Size = new System.Drawing.Size(160, 30);
+            this.btnGetProgress.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.btnGetProgress.Click += new System.EventHandler(this.btnGetProgress_Click);
 
             this.lblProgressResult.Text = "Status: -";
-            this.lblProgressResult.Location = new System.Drawing.Point(20, 130);
+            this.lblProgressResult.Location = new System.Drawing.Point(15, 105);
             this.lblProgressResult.AutoSize = true;
             this.lblProgressResult.ForeColor = System.Drawing.Color.Black;
-            this.lblProgressResult.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblProgressResult.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
 
-            this.progressBar1.Location = new System.Drawing.Point(20, 170);
-            this.progressBar1.Size = new System.Drawing.Size(670, 30);
+            this.progressBar1.Location = new System.Drawing.Point(15, 140);
+            this.progressBar1.Size = new System.Drawing.Size(700, 28);
 
             this.grpProgress.Controls.Add(this.lblCurrentPage);
             this.grpProgress.Controls.Add(this.txtCurrentPage);
@@ -209,10 +211,10 @@
             this.grpProgress.Controls.Add(this.lblProgressResult);
             this.grpProgress.Controls.Add(this.progressBar1);
 
-            // ===== Form =====
+            //  Form 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(800, 760);
-            this.Text = "eduLib - Bookmark & Reading Progress";
+            this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Text = "Book Tracking";
 
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblSearch);
