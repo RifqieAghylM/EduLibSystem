@@ -41,20 +41,14 @@ namespace eduLib.UI
             // TODO: History
         }
 
-        // ── REVIEW ──
-        // ── REVIEW ──
         private void btnreview_Click(object sender, EventArgs e)
         {
-            // 1. Buat objek FormReview sambil melempar parameter role "User"
             FormReview reviewPage = new FormReview("User");
 
-            // 2. Set posisi agar muncul di tengah layar
             reviewPage.StartPosition = FormStartPosition.CenterScreen;
 
-            // 3. Tampilkan form review milikmu
             reviewPage.Show();
 
-            // 4. Sembunyikan Dashboard User agar UI tidak menumpuk berantakan
             this.Hide();
         }
 
