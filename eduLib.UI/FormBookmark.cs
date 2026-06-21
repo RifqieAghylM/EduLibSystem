@@ -10,17 +10,49 @@ namespace eduLib.UI
     public partial class FormBookmark : Form
     {
         private readonly HttpClient _client = new HttpClient();
-
-        // GANTI sesuai port API kamu (cek Properties/launchSettings.json di eduLib.API)
         private const string ApiBaseUrl = "https://localhost:7053/api";
-
-        // Flag: true hanya jika BookId diisi lewat klik tabel hasil pencarian
         private bool _isBookSelectedFromTable = false;
 
-        public FormBookmark()
+        // 1. Tambahkan variabel global di dalam kelas untuk mencatat Role pengakses
+        private string _currentUserRole;
+
+        // 2. Ubah konstruktor agar wajib menerima parameter role
+        public FormBookmark(string userRole)
         {
             InitializeComponent();
+
+            // Simpan peran pengakses ("Admin" atau "User")
+            this._currentUserRole = userRole;
+
+            // 3. Pasang kabel pengikat elektronik untuk tombol Back agar aktif merespon
+            this.btnBackDashboard.Click += new System.EventHandler(this.btnBackDashboard_Click);
+
+            // Supaya saat form ditutup tidak mematikan seluruh engine aplikasi kelompok
+            this.FormClosed += (s, args) => this.Dispose();
         }
+
+        // 4. BIKIN METHOD LOGIKA TOMBOL BACK DINAMIS
+        private void btnBackDashboard_Click(object sender, EventArgs e)
+        {
+            if (this._currentUserRole != null && this._currentUserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                // Jika masuk sebagai Admin, balik ke Dashboard Admin
+                FormDashboardAdmin adminDashboard = new FormDashboardAdmin();
+                adminDashboard.Show();
+            }
+            else
+            {
+                // Jika masuk sebagai User biasa, balik ke Dashboard User milik Azka
+                FormDashboardUser userDashboard = new FormDashboardUser();
+                userDashboard.Show();
+            }
+
+            // Tutup halaman bookmark saat ini
+            this.Close();
+        }
+
+        // ===== PUSTAKA KODE LAINNYA DI BAWAH TETAP BIARKAN SAMA (JANGAN DIUBAH) =====
+        // ... (btnSearch_Click, btnSaveBookmark_Click, dll tetap biarkan utuh) ...
 
         // ===== SEARCH BUKU =====
         private async void btnSearch_Click(object sender, EventArgs e)
