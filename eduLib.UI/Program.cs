@@ -14,9 +14,8 @@ namespace eduLib.UI
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
-            // Menjalankan FormReview milik Rifqie sebagai halaman startup awal
-            System.Windows.Forms.Application.Run(new FormReview());
-            System.Windows.Forms.Application.Run(new FormViewReviews());
+            // Gerbang utama: Jalankan form login bawaan tim
+            System.Windows.Forms.Application.Run(new FormLogin());
         }
     }
 }

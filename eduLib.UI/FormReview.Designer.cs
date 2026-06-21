@@ -36,7 +36,7 @@
             txtUsername = new TextBox();
             rtbComment = new RichTextBox();
             btnSubmitReview = new Button();
-            button1 = new Button();
+            BackDashboard = new Button();
             btnKeHalamanLihat = new Button();
             SuspendLayout();
             // 
@@ -111,14 +111,14 @@
             btnSubmitReview.Text = "Kirim Review";
             btnSubmitReview.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // BackDashboard
             // 
-            button1.Location = new Point(613, 429);
-            button1.Name = "button1";
-            button1.Size = new Size(122, 29);
-            button1.TabIndex = 8;
-            button1.Text = "Back";
-            button1.UseVisualStyleBackColor = true;
+            BackDashboard.Location = new Point(613, 429);
+            BackDashboard.Name = "BackDashboard";
+            BackDashboard.Size = new Size(122, 29);
+            BackDashboard.TabIndex = 8;
+            BackDashboard.Text = "Back";
+            BackDashboard.UseVisualStyleBackColor = true;
             // 
             // btnKeHalamanLihat
             // 
@@ -134,7 +134,7 @@
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(782, 553);
             Controls.Add(btnKeHalamanLihat);
-            Controls.Add(button1);
+            Controls.Add(BackDashboard);
             Controls.Add(btnSubmitReview);
             Controls.Add(rtbComment);
             Controls.Add(txtUsername);
@@ -159,7 +159,7 @@
         private TextBox txtUsername;
         private RichTextBox rtbComment;
         private Button btnSubmitReview;
-        private Button button1;
+        private Button BackDashboard;
         private Button btnKeHalamanLihat;
     }
 }

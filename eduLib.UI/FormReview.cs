@@ -11,15 +11,48 @@ namespace eduLib.UI
         private readonly HttpClient _httpClient;
         private const string ApiBaseUrl = "https://localhost:7053/api/Books";
 
-        public FormReview()
+        // 1. Tambahkan variabel untuk menyimpan peran (Role) user saat ini
+        private string _currentUserRole;
+
+        // 2. Ubah konstruktor agar menerima parameter 'userRole'
+        public FormReview(string userRole)
         {
             InitializeComponent();
             _httpClient = new HttpClient();
 
+            // Simpan role yang dikirim dari Dashboard ("Admin" atau "User")
+            this._currentUserRole = userRole;
+
             btnSubmitReview.Click += btnSubmitReview_Click;
             btnKeHalamanLihat.Click += btnKeHalamanLihat_Click;
 
-            this.FormClosed += (s, args) => System.Windows.Forms.Application.Exit();
+            // PERBAIKAN: Menggunakan nama 'BackDashboard' sesuai komponen di desainer kamu
+            BackDashboard.Click += BackDashboard_Click;
+
+            // PERBAIKAN LIFECYCLE: Diubah menjadi Dispose agar saat form ditutup, 
+            // aplikasi kelompok tidak ikut mati total (Force Exit)
+            this.FormClosed += (s, args) => this.Dispose();
+        }
+
+        // --- LOGIKA TOMBOL BACK DINAMIS ---
+        private void BackDashboard_Click(object sender, EventArgs e)
+        {
+            // Cek apakah pengakses halaman ini adalah Admin atau User
+            if (this._currentUserRole != null && this._currentUserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                // Jika Admin, buka kembali Dashboard Admin
+                FormDashboardAdmin adminDashboard = new FormDashboardAdmin();
+                adminDashboard.Show();
+            }
+            else
+            {
+                // Jika User biasa, buka kembali Dashboard User (Milik Azka)
+                FormDashboardUser userDashboard = new FormDashboardUser();
+                userDashboard.Show();
+            }
+
+            // Tutup halaman review saat ini
+            this.Close();
         }
 
         private void btnKeHalamanLihat_Click(object sender, EventArgs e)
