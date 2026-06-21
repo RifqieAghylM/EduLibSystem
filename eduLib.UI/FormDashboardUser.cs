@@ -30,7 +30,14 @@ namespace eduLib.UI
 
         private void btnbookmark_Click(object sender, EventArgs e)
         {
-   
+            // Instansiasi/membuat objek dari form halaman milikmu
+            FormBookmark bookmarkPage = new FormBookmark();
+
+            // Set agar posisi form muncul pas di tengah layar laptop
+            bookmarkPage.StartPosition = FormStartPosition.CenterScreen;
+
+            // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
+            bookmarkPage.ShowDialog();
         }
 
         // ── HISTORY ──
