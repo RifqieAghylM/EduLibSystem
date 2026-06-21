@@ -23,9 +23,10 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
+       
         private void InitializeComponent()
         {
             lbltitle = new Label();
@@ -35,9 +36,7 @@
             txtpassword = new TextBox();
             btnlogin = new Button();
             SuspendLayout();
-            // 
-            // lbltitle
-            // 
+            
             lbltitle.AutoSize = true;
             lbltitle.Font = new Font("Showcard Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lbltitle.Location = new Point(310, 80);
@@ -45,45 +44,31 @@
             lbltitle.Size = new Size(162, 50);
             lbltitle.TabIndex = 0;
             lbltitle.Text = "Edulib";
-            // label1_Click dihapus — label tidak membutuhkan event Click
-            // 
-            // lblusername
-            // 
+            
             lblusername.AutoSize = true;
             lblusername.Location = new Point(138, 200);
             lblusername.Name = "lblusername";
             lblusername.Size = new Size(100, 25);
             lblusername.TabIndex = 1;
             lblusername.Text = "Username :";
-            // label2_Click dihapus — label tidak membutuhkan event Click
-            // 
-            // lblpassword
-            // 
+          
             lblpassword.AutoSize = true;
             lblpassword.Location = new Point(140, 260);
             lblpassword.Name = "lblpassword";
             lblpassword.Size = new Size(96, 25);
             lblpassword.TabIndex = 2;
             lblpassword.Text = "Password :";
-            // 
-            // txtusername
-            // 
+           
             txtusername.Location = new Point(251, 200);
             txtusername.Name = "txtusername";
             txtusername.Size = new Size(350, 31);
             txtusername.TabIndex = 3;
-            // txtusername_TextChanged dihapus — tidak ada logika di handler-nya
-            // 
-            // txtpassword
-            // 
+           
             txtpassword.Location = new Point(251, 260);
             txtpassword.Name = "txtpassword";
             txtpassword.Size = new Size(350, 31);
             txtpassword.TabIndex = 4;
-            // txtpassword_TextChanged dihapus — tidak ada logika di handler-nya
-            // 
-            // btnlogin
-            // 
+            
             btnlogin.Location = new Point(340, 340);
             btnlogin.Name = "btnlogin";
             btnlogin.Size = new Size(147, 53);

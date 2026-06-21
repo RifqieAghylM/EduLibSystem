@@ -9,7 +9,7 @@ namespace eduLib.UI
 {
     public partial class FormLogin : Form
     {
-        // Gunakan instance yang sama untuk seluruh UI
+        // Menggunakan instance yang sama untuk seluruh UI
         private readonly AuthService _authService;
         private bool _passwordVisible = false;
         private Button btnEye;
@@ -92,7 +92,7 @@ namespace eduLib.UI
             }
             catch (InvalidOperationException ex)
             {
-                // Ini akan menangkap pesan "Akun terkunci" dari state machine
+                // menangkap pesan "Akun terkunci" dari state machine
                 MessageBox.Show(ex.Message, "Akun Terkunci",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }

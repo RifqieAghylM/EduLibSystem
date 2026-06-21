@@ -10,19 +10,16 @@ namespace eduLib.UI
             InitializeComponent();
         }
 
-        // ── UPLOAD BOOK ──
         private void btnuploadbook_Click(object sender, EventArgs e)
         {
-            // TODO: Upload Book
+            
         }
 
-        // ── EDIT BOOK ──
         private void btnupdateanddeletebook_Click(object sender, EventArgs e)
         {
-            // TODO: Update & Delete Book
+         
         }
 
-        // ── BACK TO DASHBOARD ──
         private void btnback_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;

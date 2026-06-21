@@ -8,7 +8,7 @@ namespace eduLib.Application.Auth
 {
     public class AuthService
     {
-        // Static agar data user konsisten di seluruh aplikasi
+        // Menggunakan Static agar data user konsisten di seluruh aplikasi
         private static readonly List<User> _sharedMockDatabase = new List<User>
         {
             new User { Username = "admin", Password = "admin123", UserRole = Role.Admin },
@@ -17,7 +17,7 @@ namespace eduLib.Application.Auth
             new User { Username = "rifqie",  Password = "rifqie123",  UserRole = Role.User }
         };
 
-        // Static agar status (Locked/LoggedOut) tersimpan global
+        // Menggunakan static agar status (Locked/LoggedOut) tersimpan global
         private static readonly AuthStateMachine _stateMachine = new AuthStateMachine();
 
         public AuthService() { }
