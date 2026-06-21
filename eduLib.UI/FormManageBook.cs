@@ -16,10 +16,8 @@ namespace eduLib.UI
 
             uploadBook.FormClosed += (s, args) => this.Show();
 
-            // Set agar posisi form muncul pas di tengah layar laptop
             uploadBook.StartPosition = FormStartPosition.CenterScreen;
 
-            // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
             uploadBook.Show();
 
             this.Hide();
@@ -31,16 +29,13 @@ namespace eduLib.UI
 
             updateanddeletebook.FormClosed += (s, args) => this.Show();
 
-            // Set agar posisi form muncul pas di tengah layar laptop
             updateanddeletebook.StartPosition = FormStartPosition.CenterScreen;
 
-            // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
             updateanddeletebook.Show();
 
             this.Hide();
         }
 
-        // ── BACK TO DASHBOARD ──
         private void btnback_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;

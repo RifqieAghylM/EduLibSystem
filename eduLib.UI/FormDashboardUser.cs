@@ -30,14 +30,12 @@ namespace eduLib.UI
 
         private void btnbookmark_Click(object sender, EventArgs e)
         {
-            // Panggil FormBookmark dengan menyertakan parameter User
             FormBookmark bookmarkPage = new FormBookmark("User");
             bookmarkPage.FormClosed += (s, args) => this.Show();
             bookmarkPage.StartPosition = FormStartPosition.CenterScreen;
             bookmarkPage.Show();
-            this.Hide(); // Sembunyikan dashboard utama
+            this.Hide();
         }
-
 
         private void btnreview_Click(object sender, EventArgs e)
         {

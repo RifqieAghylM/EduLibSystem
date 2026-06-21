@@ -22,7 +22,6 @@ namespace eduLib.UI
             btnSearchReview.Click += btnSearchReview_Click;
         }
 
-        // NAVIGASI: Overload constructor untuk menerima instansi FormReview asal
         public FormViewReviews(FormReview formAsal) : this()
         {
             _formAsal = formAsal;
@@ -30,7 +29,6 @@ namespace eduLib.UI
             btnBack.Click += btnBack_Click;
         }
 
-        // EVENT HANDLER NAVIGASI: Kembali ke FormReview
         private void btnBack_Click(object sender, EventArgs e)
         {
             if (_formAsal != null)
@@ -62,7 +60,6 @@ namespace eduLib.UI
 
             try
             {
-                // 1. Tembak endpoint katalog umum untuk mendapatkan daftar buku
                 string searchUrl = $"{ApiBaseUrl}/search?keyword={Uri.EscapeDataString(searchKeyword)}";
                 HttpResponseMessage searchResponse = await _httpClient.GetAsync(searchUrl);
 
@@ -75,21 +72,32 @@ namespace eduLib.UI
                 string searchJson = await searchResponse.Content.ReadAsStringAsync();
                 var foundBooks = JsonConvert.DeserializeObject<List<dynamic>>(searchJson);
 
-                if (foundBooks == null || foundBooks.Count == 0)
+                bool strictBookExists = false;
+                foreach (var book in foundBooks)
                 {
-                    MessageBox.Show($"Buku atau Penulis dengan kata kunci '{searchKeyword}' tidak ditemukan di sistem!",
+                    string bTitle = book.title;
+                    string bAuthor = book.author;
+
+                    if (bTitle.Contains(searchKeyword) || bAuthor.Contains(searchKeyword))
+                    {
+                        strictBookExists = true;
+                        break;
+                    }
+                }
+
+                if (!strictBookExists)
+                {
+                    MessageBox.Show($"Buku atau Penulis dengan kata kunci '{searchKeyword}' tidak ditemukan!\n\nPastikan huruf kapital/kecil sudah benar.",
                                     "Tidak Ditemukan (404)", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 bool totalReviewsFound = false;
 
-                // 2. Looping setiap buku yang ditemukan di katalog
                 foreach (var book in foundBooks)
                 {
                     string currentTargetTitle = book.title;
 
-                    // Ambil semua ulasan yang ditarik dari backend
                     string reviewUrl = $"{ApiBaseUrl}/{Uri.EscapeDataString(currentTargetTitle)}/reviews";
                     HttpResponseMessage reviewResponse = await _httpClient.GetAsync(reviewUrl);
 
@@ -104,9 +112,15 @@ namespace eduLib.UI
                             foreach (var r in allReviews)
                             {
                                 string reviewBookTitle = r.bookDetails?.title;
-                                if (reviewBookTitle != null && reviewBookTitle.Equals(currentTargetTitle, StringComparison.OrdinalIgnoreCase))
+
+                                if (reviewBookTitle != null && reviewBookTitle.Equals(currentTargetTitle, StringComparison.Ordinal))
                                 {
-                                    filteredReviews.Add(r);
+                                    string bookAuthor = book.author;
+
+                                    if (currentTargetTitle.Contains(searchKeyword) || bookAuthor.Contains(searchKeyword))
+                                    {
+                                        filteredReviews.Add(r);
+                                    }
                                 }
                             }
 
@@ -122,7 +136,6 @@ namespace eduLib.UI
                                 lstReviewsDisplay.Items.Add("=========================================================");
                                 lstReviewsDisplay.Items.Add("");
 
-                                // Tampilkan komentar ulasan yang sudah terfilter murni
                                 foreach (var r in filteredReviews)
                                 {
                                     string username = r.username;

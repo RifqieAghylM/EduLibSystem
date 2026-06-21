@@ -196,7 +196,6 @@ namespace eduLib.UI
         private async Task UploadBookAsync()
         {
             using HttpClient client = new();
-            // PERBAIKAN BUG: Menangkap return value dari CreateContent()
             MultipartFormDataContent content = CreateContent();
 
             byte[] bytes =

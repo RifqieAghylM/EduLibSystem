@@ -13,26 +13,21 @@ namespace eduLib.UI
         private readonly HttpClient _httpClient;
         private readonly string ApiBaseUrl = ApiHelper.GetBaseUrl();
 
-        // 1. Tambahkan variabel untuk menyimpan peran (Role) user saat ini
         private string _currentUserRole;
 
-        // 2. Ubah konstruktor agar menerima parameter 'userRole'
         public FormReview(string userRole)
         {
             InitializeComponent();
             _httpClient = new HttpClient();
 
-            // Simpan role yang dikirim dari Dashboard ("Admin" atau "User")
             this._currentUserRole = userRole;
 
             btnSubmitReview.Click += btnSubmitReview_Click;
             btnKeHalamanLihat.Click += btnKeHalamanLihat_Click;
 
-            // PERBAIKAN: Menggunakan nama 'BackDashboard' sesuai komponen di desainer kamu
             BackDashboard.Click += BackDashboard_Click;
         }
 
-        // --- LOGIKA TOMBOL BACK DINAMIS ---
         private void BackDashboard_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -45,7 +40,6 @@ namespace eduLib.UI
             this.Hide();
         }
 
-        // --- LOGIKA VALIDASI SECURE CODING ---
         private bool IsInputValid(string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return false;
@@ -53,7 +47,6 @@ namespace eduLib.UI
             return hasLetterRegex.IsMatch(text);
         }
 
-        // --- LOGIKA POST REVIEW ---
         private async void btnSubmitReview_Click(object sender, EventArgs e)
         {
             string title = txtBookTitle.Text.Trim();

@@ -9,7 +9,6 @@ namespace eduLib.UI
 {
     public partial class FormLogin : Form
     {
-        // Menggunakan instance yang sama untuk seluruh UI
         private readonly AuthService _authService;
         private bool _passwordVisible = false;
         private Button btnEye;
@@ -54,7 +53,6 @@ namespace eduLib.UI
             string username = txtusername.Text.Trim();
             string password = txtpassword.Text;
 
-            // Validasi Input Kosong
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Username dan Password tidak boleh kosong!",
@@ -64,12 +62,10 @@ namespace eduLib.UI
 
             try
             {
-                // Login via AuthService
                 var user = _authService.Login(username, password);
 
                 this.Hide();
 
-                // Navigasi berdasarkan Role
                 if (user.UserRole == Role.Admin)
                 {
                     var adminDashboard = new FormDashboardAdmin();
@@ -92,7 +88,6 @@ namespace eduLib.UI
             }
             catch (InvalidOperationException ex)
             {
-                // menangkap pesan "Akun terkunci" dari state machine
                 MessageBox.Show(ex.Message, "Akun Terkunci",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
