@@ -114,5 +114,15 @@ namespace eduLib.UI
             txtusername.Focus();
             this.Show();
         }
+
+        private void lbltitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lbltitle_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

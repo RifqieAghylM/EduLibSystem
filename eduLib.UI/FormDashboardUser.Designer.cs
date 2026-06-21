@@ -41,7 +41,7 @@
             // 
             lbltitledashboarduser.AutoSize = true;
             lbltitledashboarduser.Font = new Font("Showcard Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lbltitledashboarduser.Location = new Point(200, 26);
+            lbltitledashboarduser.Location = new Point(288, 26);
             lbltitledashboarduser.Name = "lbltitledashboarduser";
             lbltitledashboarduser.Size = new Size(368, 50);
             lbltitledashboarduser.TabIndex = 0;

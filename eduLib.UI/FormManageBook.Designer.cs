@@ -33,15 +33,19 @@
             btnupdateanddeletebook = new Button();
             btnback = new Button();
             SuspendLayout();
-         
+            // 
+            // lblmanagebook
+            // 
             lblmanagebook.AutoSize = true;
             lblmanagebook.Font = new Font("Showcard Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblmanagebook.Location = new Point(235, 55);
+            lblmanagebook.Location = new Point(273, 55);
             lblmanagebook.Name = "lblmanagebook";
             lblmanagebook.Size = new Size(299, 50);
             lblmanagebook.TabIndex = 0;
             lblmanagebook.Text = "Manage Book";
-           
+            // 
+            // btnuploadbook
+            // 
             btnuploadbook.Location = new Point(99, 194);
             btnuploadbook.Name = "btnuploadbook";
             btnuploadbook.Size = new Size(193, 101);
@@ -49,7 +53,9 @@
             btnuploadbook.Text = "Upload Book";
             btnuploadbook.UseVisualStyleBackColor = true;
             btnuploadbook.Click += btnuploadbook_Click;
-           
+            // 
+            // btnupdateanddeletebook
+            // 
             btnupdateanddeletebook.Location = new Point(471, 194);
             btnupdateanddeletebook.Name = "btnupdateanddeletebook";
             btnupdateanddeletebook.Size = new Size(202, 101);
@@ -57,7 +63,9 @@
             btnupdateanddeletebook.Text = "Update And Delete Book";
             btnupdateanddeletebook.UseVisualStyleBackColor = true;
             btnupdateanddeletebook.Click += btnupdateanddeletebook_Click;
-            
+            // 
+            // btnback
+            // 
             btnback.Location = new Point(274, 354);
             btnback.Name = "btnback";
             btnback.Size = new Size(202, 101);
@@ -65,7 +73,9 @@
             btnback.Text = "Back";
             btnback.UseVisualStyleBackColor = true;
             btnback.Click += btnback_Click;
-            
+            // 
+            // FormManageBook
+            // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(778, 544);
             Controls.Add(btnback);
