@@ -4,13 +4,14 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Forms;
 using eduLib.Core.Entities;
+using eduLib.Infrastructure.API;
 
 namespace eduLib.UI
 {
     public partial class FormBookmark : Form
     {
         private readonly HttpClient _client = new HttpClient();
-        private const string ApiBaseUrl = "https://localhost:7053/api";
+        private readonly string ApiBaseUrl = ApiHelper.GetBaseUrl();
         private bool _isBookSelectedFromTable = false;
 
         // 1. Tambahkan variabel global di dalam kelas untuk mencatat Role pengakses
