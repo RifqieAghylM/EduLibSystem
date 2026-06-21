@@ -11,21 +11,15 @@ namespace eduLib.UI
         }
 
         // ── UPLOAD BOOK ──
-        private void btnuploadbuku_Click(object sender, EventArgs e)
+        private void btnuploadbook_Click(object sender, EventArgs e)
         {
             // TODO: Upload Book
         }
 
         // ── EDIT BOOK ──
-        private void btneditbuku_Click(object sender, EventArgs e)
+        private void btnupdateanddeletebook_Click(object sender, EventArgs e)
         {
-            // TODO: Edit Book
-        }
-
-        // ── DELETE BOOK ──
-        private void btndeletebuku_Click(object sender, EventArgs e)
-        {
-            // TODO: Delete Book
+            // TODO: Update & Delete Book
         }
 
         // ── BACK TO DASHBOARD ──

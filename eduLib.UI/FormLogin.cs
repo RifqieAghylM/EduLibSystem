@@ -34,10 +34,10 @@ namespace eduLib.UI
 
             int btnW = 28;
 
-            btnEye.Size = new Size(btnW, txtpassword.Height); 
+            btnEye.Size = new Size(btnW, txtpassword.Height);
             btnEye.Location = new Point(
                 txtpassword.Right - btnW - 2,
-                txtpassword.Top    
+                txtpassword.Top
             );
 
             btnEye.FlatStyle = FlatStyle.Flat;
@@ -123,10 +123,5 @@ namespace eduLib.UI
             txtusername.Focus();
             this.Show();
         }
-
-        private void label1_Click(object sender, EventArgs e) { }
-        private void label2_Click(object sender, EventArgs e) { }
-        private void txtusername_TextChanged(object sender, EventArgs e) { }
-        private void txtpassword_TextChanged(object sender, EventArgs e) { }
     }
 }

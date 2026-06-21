@@ -45,7 +45,7 @@
             lbltitle.Size = new Size(162, 50);
             lbltitle.TabIndex = 0;
             lbltitle.Text = "Edulib";
-            lbltitle.Click += label1_Click;
+            // label1_Click dihapus — label tidak membutuhkan event Click
             // 
             // lblusername
             // 
@@ -55,7 +55,7 @@
             lblusername.Size = new Size(100, 25);
             lblusername.TabIndex = 1;
             lblusername.Text = "Username :";
-            lblusername.Click += label2_Click;
+            // label2_Click dihapus — label tidak membutuhkan event Click
             // 
             // lblpassword
             // 
@@ -72,7 +72,7 @@
             txtusername.Name = "txtusername";
             txtusername.Size = new Size(350, 31);
             txtusername.TabIndex = 3;
-            txtusername.TextChanged += txtusername_TextChanged;
+            // txtusername_TextChanged dihapus — tidak ada logika di handler-nya
             // 
             // txtpassword
             // 
@@ -80,7 +80,7 @@
             txtpassword.Name = "txtpassword";
             txtpassword.Size = new Size(350, 31);
             txtpassword.TabIndex = 4;
-            txtpassword.TextChanged += txtpassword_TextChanged;
+            // txtpassword_TextChanged dihapus — tidak ada logika di handler-nya
             // 
             // btnlogin
             // 

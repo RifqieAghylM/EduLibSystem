@@ -29,9 +29,8 @@
         private void InitializeComponent()
         {
             lblmanagebook = new Label();
-            btnuploadbuku = new Button();
-            btndeletebuku = new Button();
-            btneditbuku = new Button();
+            btnuploadbook = new Button();
+            btnupdateanddeletebook = new Button();
             btnback = new Button();
             SuspendLayout();
             // 
@@ -45,39 +44,29 @@
             lblmanagebook.TabIndex = 0;
             lblmanagebook.Text = "Manage Book";
             // 
-            // btnuploadbuku
+            // btnuploadbook
             // 
-            btnuploadbuku.Location = new Point(99, 194);
-            btnuploadbuku.Name = "btnuploadbuku";
-            btnuploadbuku.Size = new Size(193, 101);
-            btnuploadbuku.TabIndex = 1;
-            btnuploadbuku.Text = "Upload Book";
-            btnuploadbuku.UseVisualStyleBackColor = true;
-            btnuploadbuku.Click += btnuploadbuku_Click;
+            btnuploadbook.Location = new Point(99, 194);
+            btnuploadbook.Name = "btnuploadbook";
+            btnuploadbook.Size = new Size(193, 101);
+            btnuploadbook.TabIndex = 1;
+            btnuploadbook.Text = "Upload Book";
+            btnuploadbook.UseVisualStyleBackColor = true;
+            btnuploadbook.Click += btnuploadbook_Click;
             // 
-            // btndeletebuku
+            // btnupdateanddeletebook
             // 
-            btndeletebuku.Location = new Point(99, 355);
-            btndeletebuku.Name = "btndeletebuku";
-            btndeletebuku.Size = new Size(185, 101);
-            btndeletebuku.TabIndex = 2;
-            btndeletebuku.Text = "Delete Book";
-            btndeletebuku.UseVisualStyleBackColor = true;
-            btndeletebuku.Click += btndeletebuku_Click;
-            // 
-            // btneditbuku
-            // 
-            btneditbuku.Location = new Point(471, 194);
-            btneditbuku.Name = "btneditbuku";
-            btneditbuku.Size = new Size(202, 101);
-            btneditbuku.TabIndex = 3;
-            btneditbuku.Text = "Edit Book";
-            btneditbuku.UseVisualStyleBackColor = true;
-            btneditbuku.Click += btneditbuku_Click;
+            btnupdateanddeletebook.Location = new Point(471, 194);
+            btnupdateanddeletebook.Name = "btnupdateanddeletebook";
+            btnupdateanddeletebook.Size = new Size(202, 101);
+            btnupdateanddeletebook.TabIndex = 3;
+            btnupdateanddeletebook.Text = "Update And Delete Book";
+            btnupdateanddeletebook.UseVisualStyleBackColor = true;
+            btnupdateanddeletebook.Click += btnupdateanddeletebook_Click;
             // 
             // btnback
             // 
-            btnback.Location = new Point(471, 355);
+            btnback.Location = new Point(274, 354);
             btnback.Name = "btnback";
             btnback.Size = new Size(202, 101);
             btnback.TabIndex = 4;
@@ -90,9 +79,8 @@
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(778, 544);
             Controls.Add(btnback);
-            Controls.Add(btneditbuku);
-            Controls.Add(btndeletebuku);
-            Controls.Add(btnuploadbuku);
+            Controls.Add(btnupdateanddeletebook);
+            Controls.Add(btnuploadbook);
             Controls.Add(lblmanagebook);
             Name = "FormManageBook";
             Text = "Form Manage Book";
@@ -103,9 +91,8 @@
         #endregion
 
         private Label lblmanagebook;
-        private Button btnuploadbuku;
-        private Button btndeletebuku;
-        private Button btneditbuku;
+        private Button btnuploadbook;
+        private Button btnupdateanddeletebook;
         private Button btnback;
     }
 }

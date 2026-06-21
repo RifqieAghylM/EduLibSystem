@@ -50,12 +50,7 @@ namespace eduLib.UI
             );
 
             if (confirm == DialogResult.Yes)
-                this.Close(); // FormLogin akan muncul kembali
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
+                this.Close();
         }
     }
 }

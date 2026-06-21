@@ -56,7 +56,7 @@
             lblwelcomeadmin.Size = new Size(152, 25);
             lblwelcomeadmin.TabIndex = 1;
             lblwelcomeadmin.Text = "Welcome, Admin!";
-            lblwelcomeadmin.Click += lblwelcomeadmin_Click;
+            // lblwelcomeadmin_Click dihapus — label teks tidak membutuhkan event Click
             // 
             // btnmanagebook
             // 

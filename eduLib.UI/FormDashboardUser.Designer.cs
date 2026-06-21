@@ -46,7 +46,7 @@
             lbltitledashboarduser.Size = new Size(368, 50);
             lbltitledashboarduser.TabIndex = 0;
             lbltitledashboarduser.Text = "Dashboard User";
-            lbltitledashboarduser.Click += label1_Click;
+            // label1_Click dihapus — label judul tidak membutuhkan event Click
             // 
             // lblwelcomeuser
             // 

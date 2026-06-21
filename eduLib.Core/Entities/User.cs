@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using eduLib.Core.Enums;
+﻿using eduLib.Core.Enums;
 
 namespace eduLib.Core.Entities
 {
