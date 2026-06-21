@@ -8,9 +8,6 @@ namespace eduLib.UI
         public FormDashboardAdmin()
         {
             InitializeComponent();
-            this.btnreview.Click += new System.EventHandler(this.btnreview_Click);
-
-            this.btnbookmark.Click += new System.EventHandler(this.btnbookmark_Click);
         }
 
         private void FormDashboard_Load(object sender, EventArgs e)
@@ -21,19 +18,22 @@ namespace eduLib.UI
         private void btnmanagebook_Click(object sender, EventArgs e)
         {
             FormManageBook formManage = new FormManageBook();
-            formManage.ShowDialog();
+            formManage.FormClosed += (s, args) => this.Show();
+            formManage.Show();
+            this.Hide();
         }
 
         private void btnreadanddownloadbook_Click(object sender, EventArgs e)
         {
-            // Instansiasi/membuat objek dari form halaman milikmu
             ReadDownloadForm readDownloadPage = new ReadDownloadForm();
 
-            // Set agar posisi form muncul pas di tengah layar laptop
+            readDownloadPage.FormClosed += (s, args) => this.Show();
+
             readDownloadPage.StartPosition = FormStartPosition.CenterScreen;
 
-            // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
-            readDownloadPage.ShowDialog();
+            readDownloadPage.Show();
+
+            this.Hide();
         }
 
         // ── REVIEW ──

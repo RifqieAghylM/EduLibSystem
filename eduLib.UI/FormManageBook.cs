@@ -14,34 +14,30 @@ namespace eduLib.UI
         {
             EduLibAdmin1 uploadBook = new EduLibAdmin1();
 
+            uploadBook.FormClosed += (s, args) => this.Show();
+
             // Set agar posisi form muncul pas di tengah layar laptop
             uploadBook.StartPosition = FormStartPosition.CenterScreen;
 
             // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
-            uploadBook.ShowDialog();
+            uploadBook.Show();
+
+            this.Hide();
         }
 
         private void btnupdateanddeletebook_Click(object sender, EventArgs e)
         {
-            KelolaAdmin editBook = new KelolaAdmin();
+            KelolaAdmin updateanddeletebook = new KelolaAdmin();
+
+            updateanddeletebook.FormClosed += (s, args) => this.Show();
 
             // Set agar posisi form muncul pas di tengah layar laptop
-            editBook.StartPosition = FormStartPosition.CenterScreen;
+            updateanddeletebook.StartPosition = FormStartPosition.CenterScreen;
 
             // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
-            editBook.ShowDialog();
-        }
+            updateanddeletebook.Show();
 
-        // ── DELETE BOOK ──
-        private void btndeletebuku_Click(object sender, EventArgs e)
-        {
-            KelolaAdmin deleteBook = new KelolaAdmin();
-
-            // Set agar posisi form muncul pas di tengah layar laptop
-            deleteBook.StartPosition = FormStartPosition.CenterScreen;
-
-            // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
-            deleteBook.ShowDialog();
+            this.Hide();
         }
 
         // ── BACK TO DASHBOARD ──
