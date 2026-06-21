@@ -116,12 +116,26 @@ namespace eduLib.UI
 
             return true;
         }
+        //validasi file pdf
         private bool ValidatePdf()
         {
             if (!isEditMode && string.IsNullOrEmpty(selectedPdfPath))
             {
                 MessageBox.Show("Pilih PDF");
                 return false;
+            }
+
+            if (!string.IsNullOrEmpty(selectedPdfPath))
+            {
+                FileInfo file = new FileInfo(selectedPdfPath);
+
+                long maxSize = 50 * 1024 * 1024; // 50 MB
+
+                if (file.Length > maxSize)
+                {
+                    MessageBox.Show("Ukuran PDF maksimal 50 MB.");
+                    return false;
+                }
             }
 
             return true;
