@@ -16,20 +16,17 @@ namespace eduLib.UI
             InitializeComponent();
             _httpClient = new HttpClient();
 
-            // 1. Daftarkan event klik tombol dengan benar (Clean Code)
             btnSubmitReview.Click += btnSubmitReview_Click;
             btnKeHalamanLihat.Click += btnKeHalamanLihat_Click;
 
-            // 2. KUNCI UTAMA: Jika tombol silang merah 'X' di FormReview diklik, matikan total aplikasi!
             this.FormClosed += (s, args) => System.Windows.Forms.Application.Exit();
         }
 
-        // --- NAVIGASI 1: Tombol 'Lihat Review' (Pindah ke FormViewReviews) ---
         private void btnKeHalamanLihat_Click(object sender, EventArgs e)
         {
             FormViewReviews halamanLihat = new FormViewReviews(this);
             halamanLihat.Show();
-            this.Hide(); // Sembunyikan form input ini
+            this.Hide();
         }
 
         // --- LOGIKA VALIDASI SECURE CODING ---
