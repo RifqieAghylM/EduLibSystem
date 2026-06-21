@@ -43,6 +43,8 @@ namespace eduLib.UI
         {
             FormReview reviewPage = new FormReview("User");
 
+            reviewPage.FormClosed += (s, args) => this.Show();
+
             reviewPage.StartPosition = FormStartPosition.CenterScreen;
 
             reviewPage.Show();

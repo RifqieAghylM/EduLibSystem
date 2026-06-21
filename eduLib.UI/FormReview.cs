@@ -28,30 +28,11 @@ namespace eduLib.UI
 
             // PERBAIKAN: Menggunakan nama 'BackDashboard' sesuai komponen di desainer kamu
             BackDashboard.Click += BackDashboard_Click;
-
-            // PERBAIKAN LIFECYCLE: Diubah menjadi Dispose agar saat form ditutup, 
-            // aplikasi kelompok tidak ikut mati total (Force Exit)
-            this.FormClosed += (s, args) => this.Dispose();
         }
 
         // --- LOGIKA TOMBOL BACK DINAMIS ---
         private void BackDashboard_Click(object sender, EventArgs e)
         {
-            // Cek apakah pengakses halaman ini adalah Admin atau User
-            if (this._currentUserRole != null && this._currentUserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                // Jika Admin, buka kembali Dashboard Admin
-                FormDashboardAdmin adminDashboard = new FormDashboardAdmin();
-                adminDashboard.Show();
-            }
-            else
-            {
-                // Jika User biasa, buka kembali Dashboard User (Milik Azka)
-                FormDashboardUser userDashboard = new FormDashboardUser();
-                userDashboard.Show();
-            }
-
-            // Tutup halaman review saat ini
             this.Close();
         }
 

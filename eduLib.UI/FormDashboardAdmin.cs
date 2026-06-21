@@ -41,6 +41,8 @@ namespace eduLib.UI
             // 1. Buat objek FormReview sambil melempar parameter role "Admin"
             FormReview reviewPage = new FormReview("Admin");
 
+            reviewPage.FormClosed += (s, args) => this.Show();
+
             // 2. Set posisi agar muncul di tengah layar
             reviewPage.StartPosition = FormStartPosition.CenterScreen;
 
