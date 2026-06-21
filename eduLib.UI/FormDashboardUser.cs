@@ -40,11 +40,6 @@ namespace eduLib.UI
             this.Hide(); // Sembunyikan dashboard utama
         }
 
-        // ── HISTORY ──
-        private void btnhistory_Click(object sender, EventArgs e)
-        {
-            // TODO: History
-        }
 
         private void btnreview_Click(object sender, EventArgs e)
         {
