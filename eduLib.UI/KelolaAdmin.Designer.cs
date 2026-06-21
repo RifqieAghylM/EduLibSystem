@@ -51,17 +51,18 @@
             // 
             // buttonCari
             // 
+            buttonCari.BackColor = SystemColors.ActiveCaption;
             buttonCari.Location = new Point(535, 137);
             buttonCari.Name = "buttonCari";
             buttonCari.Size = new Size(150, 46);
             buttonCari.TabIndex = 1;
             buttonCari.Text = "Cari";
-            buttonCari.UseVisualStyleBackColor = true;
+            buttonCari.UseVisualStyleBackColor = false;
             buttonCari.Click += buttonCari_Click;
             // 
             // textBoxSearch
             // 
-            textBoxSearch.Location = new Point(154, 137);
+            textBoxSearch.Location = new Point(159, 141);
             textBoxSearch.Name = "textBoxSearch";
             textBoxSearch.Size = new Size(355, 39);
             textBoxSearch.TabIndex = 2;
@@ -89,12 +90,13 @@
             // 
             // buttonBack
             // 
+            buttonBack.BackColor = Color.IndianRed;
             buttonBack.Location = new Point(535, 449);
             buttonBack.Name = "buttonBack";
             buttonBack.Size = new Size(150, 46);
             buttonBack.TabIndex = 5;
             buttonBack.Text = "Back";
-            buttonBack.UseVisualStyleBackColor = true;
+            buttonBack.UseVisualStyleBackColor = false;
             buttonBack.Click += buttonBack_Click;
             // 
             // KelolaAdmin

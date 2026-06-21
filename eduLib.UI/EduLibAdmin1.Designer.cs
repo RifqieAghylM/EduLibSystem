@@ -124,33 +124,36 @@
             // 
             // buttonUpload
             // 
+            buttonUpload.BackColor = SystemColors.ActiveCaption;
             buttonUpload.Location = new Point(35, 431);
             buttonUpload.Name = "buttonUpload";
             buttonUpload.Size = new Size(175, 46);
             buttonUpload.TabIndex = 9;
             buttonUpload.Text = "Upload";
-            buttonUpload.UseVisualStyleBackColor = true;
+            buttonUpload.UseVisualStyleBackColor = false;
             buttonUpload.Click += buttonUpload_Click;
             // 
             // buttonReset
             // 
+            buttonReset.BackColor = SystemColors.ActiveBorder;
             buttonReset.Location = new Point(240, 431);
             buttonReset.Name = "buttonReset";
             buttonReset.Size = new Size(175, 46);
             buttonReset.TabIndex = 10;
             buttonReset.Text = "Reset";
-            buttonReset.UseVisualStyleBackColor = true;
+            buttonReset.UseVisualStyleBackColor = false;
             buttonReset.Click += buttonReset_Click;
             // 
             // buttonBack
             // 
+            buttonBack.BackColor = Color.IndianRed;
             buttonBack.Location = new Point(463, 431);
             buttonBack.Name = "buttonBack";
             buttonBack.RightToLeft = RightToLeft.No;
             buttonBack.Size = new Size(175, 46);
             buttonBack.TabIndex = 11;
             buttonBack.Text = "Back";
-            buttonBack.UseVisualStyleBackColor = true;
+            buttonBack.UseVisualStyleBackColor = false;
             buttonBack.Click += buttonBack_Click;
             // 
             // EduLibAdmin1
