@@ -26,13 +26,13 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+
         private void InitializeComponent()
         {
             lbltitledashboarduser = new Label();
             lblwelcomeuser = new Label();
             btnreadanddownloadbook = new Button();
             btnbookmark = new Button();
-            btnhistory = new Button();
             btnreview = new Button();
             btnlogout = new Button();
             SuspendLayout();
@@ -41,12 +41,11 @@
             // 
             lbltitledashboarduser.AutoSize = true;
             lbltitledashboarduser.Font = new Font("Showcard Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lbltitledashboarduser.Location = new Point(200, 26);
+            lbltitledashboarduser.Location = new Point(288, 26);
             lbltitledashboarduser.Name = "lbltitledashboarduser";
             lbltitledashboarduser.Size = new Size(368, 50);
             lbltitledashboarduser.TabIndex = 0;
             lbltitledashboarduser.Text = "Dashboard User";
-            lbltitledashboarduser.Click += label1_Click;
             // 
             // lblwelcomeuser
             // 
@@ -61,7 +60,7 @@
             // 
             btnreadanddownloadbook.Location = new Point(114, 176);
             btnreadanddownloadbook.Name = "btnreadanddownloadbook";
-            btnreadanddownloadbook.Size = new Size(156, 114);
+            btnreadanddownloadbook.Size = new Size(180, 126);
             btnreadanddownloadbook.TabIndex = 5;
             btnreadanddownloadbook.Text = "Read And Download Book";
             btnreadanddownloadbook.UseVisualStyleBackColor = true;
@@ -69,29 +68,19 @@
             // 
             // btnbookmark
             // 
-            btnbookmark.Location = new Point(323, 176);
+            btnbookmark.Location = new Point(496, 176);
             btnbookmark.Name = "btnbookmark";
-            btnbookmark.Size = new Size(155, 114);
+            btnbookmark.Size = new Size(201, 126);
             btnbookmark.TabIndex = 6;
             btnbookmark.Text = "Bookmark";
             btnbookmark.UseVisualStyleBackColor = true;
             btnbookmark.Click += btnbookmark_Click;
             // 
-            // btnhistory
-            // 
-            btnhistory.Location = new Point(114, 343);
-            btnhistory.Name = "btnhistory";
-            btnhistory.Size = new Size(156, 109);
-            btnhistory.TabIndex = 7;
-            btnhistory.Text = "History";
-            btnhistory.UseVisualStyleBackColor = true;
-            btnhistory.Click += btnhistory_Click;
-            // 
             // btnreview
             // 
-            btnreview.Location = new Point(542, 177);
+            btnreview.Location = new Point(114, 336);
             btnreview.Name = "btnreview";
-            btnreview.Size = new Size(151, 113);
+            btnreview.Size = new Size(180, 125);
             btnreview.TabIndex = 8;
             btnreview.Text = "Review";
             btnreview.UseVisualStyleBackColor = true;
@@ -99,9 +88,9 @@
             // 
             // btnlogout
             // 
-            btnlogout.Location = new Point(323, 343);
+            btnlogout.Location = new Point(496, 336);
             btnlogout.Name = "btnlogout";
-            btnlogout.Size = new Size(155, 109);
+            btnlogout.Size = new Size(201, 125);
             btnlogout.TabIndex = 9;
             btnlogout.Text = "Log Out";
             btnlogout.UseVisualStyleBackColor = true;
@@ -113,7 +102,6 @@
             ClientSize = new Size(778, 544);
             Controls.Add(btnlogout);
             Controls.Add(btnreview);
-            Controls.Add(btnhistory);
             Controls.Add(btnbookmark);
             Controls.Add(btnreadanddownloadbook);
             Controls.Add(lblwelcomeuser);
@@ -131,7 +119,6 @@
         private Label lblwelcomeuser;
         private Button btnreadanddownloadbook;
         private Button btnbookmark;
-        private Button btnhistory;
         private Button btnreview;
         private Button btnlogout;
     }

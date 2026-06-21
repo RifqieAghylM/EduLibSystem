@@ -23,9 +23,10 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
+
         private void InitializeComponent()
         {
             lbltitle = new Label();
@@ -40,12 +41,13 @@
             // 
             lbltitle.AutoSize = true;
             lbltitle.Font = new Font("Showcard Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lbltitle.Location = new Point(310, 80);
+            lbltitle.Location = new Point(340, 49);
             lbltitle.Name = "lbltitle";
             lbltitle.Size = new Size(162, 50);
             lbltitle.TabIndex = 0;
             lbltitle.Text = "Edulib";
-            lbltitle.Click += label1_Click;
+            lbltitle.TextAlign = ContentAlignment.TopCenter;
+            lbltitle.Click += lbltitle_Click_1;
             // 
             // lblusername
             // 
@@ -55,7 +57,6 @@
             lblusername.Size = new Size(100, 25);
             lblusername.TabIndex = 1;
             lblusername.Text = "Username :";
-            lblusername.Click += label2_Click;
             // 
             // lblpassword
             // 
@@ -72,7 +73,6 @@
             txtusername.Name = "txtusername";
             txtusername.Size = new Size(350, 31);
             txtusername.TabIndex = 3;
-            txtusername.TextChanged += txtusername_TextChanged;
             // 
             // txtpassword
             // 
@@ -80,11 +80,10 @@
             txtpassword.Name = "txtpassword";
             txtpassword.Size = new Size(350, 31);
             txtpassword.TabIndex = 4;
-            txtpassword.TextChanged += txtpassword_TextChanged;
             // 
             // btnlogin
             // 
-            btnlogin.Location = new Point(340, 340);
+            btnlogin.Location = new Point(329, 340);
             btnlogin.Name = "btnlogin";
             btnlogin.Size = new Size(147, 53);
             btnlogin.TabIndex = 5;

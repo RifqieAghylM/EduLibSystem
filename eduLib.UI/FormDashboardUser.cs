@@ -16,7 +16,6 @@ namespace eduLib.UI
             lblwelcomeuser.Text = "Welcome, User!";
         }
 
-        // ── READ AND DOWNLOAD BOOK ──
         private void btnreadanddownloadbook_Click(object sender, EventArgs e)
         {
             // Instansiasi/membuat objek dari form halaman milikmu
@@ -29,10 +28,9 @@ namespace eduLib.UI
             readDownloadPage.ShowDialog();
         }
 
-        // ── BOOKMARK ──
         private void btnbookmark_Click(object sender, EventArgs e)
         {
-            // TODO: Bookmark
+   
         }
 
         // ── HISTORY ──
@@ -52,7 +50,6 @@ namespace eduLib.UI
             this.Hide();
         }
 
-        // ── LOGOUT ──
         private void btnlogout_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(
@@ -63,12 +60,7 @@ namespace eduLib.UI
             );
 
             if (confirm == DialogResult.Yes)
-                this.Close(); // FormLogin akan muncul kembali
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
+                this.Close();
         }
     }
 }
