@@ -12,10 +12,8 @@ namespace eduLib.UI
         private readonly HttpClient _httpClient;
         private const string ApiBaseUrl = "https://localhost:7053/api/Books";
 
-        // Menampung referensi objek form pemanggil
         private readonly FormReview _formAsal;
 
-        // Konstruktor default (tetap dipertahankan agar desainer WinForms tidak error)
         public FormViewReviews()
         {
             InitializeComponent();
@@ -28,7 +26,6 @@ namespace eduLib.UI
         {
             _formAsal = formAsal;
 
-            // Mendaftarkan tombol back untuk navigasi pulang
             btnBack.Click += btnBack_Click;
         }
 
@@ -37,10 +34,8 @@ namespace eduLib.UI
         {
             if (_formAsal != null)
             {
-                // Memunculkan kembali halaman input ulasan yang disembunyikan
                 _formAsal.Show();
             }
-            // Menutup form pencarian ini, kembali dengan aman ke FormReview
             this.Close();
         }
 
@@ -51,9 +46,6 @@ namespace eduLib.UI
             return hasLetterRegex.IsMatch(text);
         }
 
-        /// <summary>
-        /// EVENT HANDLER: Mencari Ulasan Fleksibel Berdasarkan Judul / Penulis (Parameterization di level GUI)
-        /// </summary>
         private async void btnSearchReview_Click(object sender, EventArgs e)
         {
             string searchKeyword = txtSearchTitle.Text.Trim();
@@ -107,8 +99,6 @@ namespace eduLib.UI
 
                         if (allReviews != null && allReviews.Count > 0)
                         {
-                            // FILTER KETAT (EXACT MATCH): Menyaring ulasan agar HANYA mengambil yang judulnya sama persis 
-                            // dengan target judul looping saat ini. Ini mencegah ulasan "kpl bisa 12" bocor ke "kpl bisa".
                             var filteredReviews = new List<dynamic>();
                             foreach (var r in allReviews)
                             {
@@ -119,13 +109,11 @@ namespace eduLib.UI
                                 }
                             }
 
-                            // Jika setelah difilter ketat ulasannya ada, baru kita gambar ke ListBox
                             if (filteredReviews.Count > 0)
                             {
                                 totalReviewsFound = true;
                                 var bookInfo = filteredReviews[0].bookDetails;
 
-                                // FORMAT TAMPILAN SESUAI FOTO KAMU
                                 lstReviewsDisplay.Items.Add($"=== DETAIL BUKU ===");
                                 lstReviewsDisplay.Items.Add($"Judul   : {bookInfo.title}");
                                 lstReviewsDisplay.Items.Add($"Penulis : {bookInfo.author}");
