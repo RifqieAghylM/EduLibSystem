@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -7,7 +7,7 @@ using eduLib.Core.Entities;
 
 namespace eduLib.UI
 {
-    public partial class Form1 : Form
+    public partial class FormBookmark : Form
     {
         private readonly HttpClient _client = new HttpClient();
 
@@ -17,7 +17,7 @@ namespace eduLib.UI
         // Flag: true hanya jika BookId diisi lewat klik tabel hasil pencarian
         private bool _isBookSelectedFromTable = false;
 
-        public Form1()
+        public FormBookmark()
         {
             InitializeComponent();
         }
@@ -249,16 +249,6 @@ namespace eduLib.UI
                 return false;
             }
             return true;
-        }
-
-        private void txtBookId_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblBookmarkResult_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

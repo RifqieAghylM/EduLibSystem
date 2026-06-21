@@ -1,6 +1,6 @@
 ﻿namespace eduLib.UI
 {
-    partial class Form1
+    partial class FormBookmark
     {
         private System.ComponentModel.IContainer components = null;
 

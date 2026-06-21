@@ -11,7 +11,6 @@ namespace eduLib.Application.Tracking
 
         public void SaveBookmark(string bookId, int page)
         {
-            // Defensive Programming (DbC)
             if (string.IsNullOrWhiteSpace(bookId))
                 throw new ArgumentNullException(nameof(bookId), "ID Buku tidak boleh kosong.");
             if (page < 0)
