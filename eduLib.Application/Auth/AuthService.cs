@@ -22,6 +22,10 @@ namespace eduLib.Application.Auth
 
         public AuthService() { }
 
+        public AuthService(List<User> userDatabase)
+        {
+        }
+
         public SessionState GetCurrentState() => _stateMachine.CurrentState;
 
         public User Login(string username, string password)

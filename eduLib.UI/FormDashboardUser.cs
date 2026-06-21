@@ -17,7 +17,14 @@ namespace eduLib.UI
 
         private void btnreadanddownloadbook_Click(object sender, EventArgs e)
         {
-           
+            // Instansiasi/membuat objek dari form halaman milikmu
+            ReadDownloadForm readDownloadPage = new ReadDownloadForm();
+
+            // Set agar posisi form muncul pas di tengah layar laptop
+            readDownloadPage.StartPosition = FormStartPosition.CenterScreen;
+
+            // Tampilkan sebagai Dialog (mengunci menu utama di belakangnya)
+            readDownloadPage.ShowDialog();
         }
 
         private void btnbookmark_Click(object sender, EventArgs e)

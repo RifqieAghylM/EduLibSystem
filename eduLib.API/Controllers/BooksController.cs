@@ -133,7 +133,7 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Buku beserta file PDF berhasil dihapus secara permanen." });
         }
 
-        // --- 1. MEMBUAT REVIEW (SANGAT SENSITIF KAPITAL - CASE SENSITIVE) ---
+        // --- 1. MEMBUAT REVIEW ---
         [HttpPost("review")]
         public async Task<IActionResult> AddReview([FromForm] string title, [FromForm] string username, [FromForm] string comment)
         {
@@ -173,7 +173,7 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Review berhasil disimpan!", Data = newReview });
         }
 
-        // --- 2. MENAMPILKAN REVIEW (SANGAT SENSITIF KAPITAL - CASE SENSITIVE) ---
+        // --- 2. MENAMPILKAN REVIEW ---
         [HttpGet("{title}/reviews")]
         public async Task<IActionResult> GetBookReviews([FromRoute] string title)
         {
