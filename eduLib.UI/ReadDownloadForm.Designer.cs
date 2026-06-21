@@ -44,7 +44,6 @@
             txtSearch.Name = "txtSearch";
             txtSearch.Size = new Size(627, 27);
             txtSearch.TabIndex = 5;
-            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // btnSearch
             // 
@@ -74,7 +73,6 @@
             dgvBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvBooks.Size = new Size(733, 349);
             dgvBooks.TabIndex = 3;
-            dgvBooks.CellContentClick += dgvBooks_CellContentClick;
             // 
             // btnDownload
             // 
@@ -107,7 +105,6 @@
             lblTitle.Size = new Size(294, 31);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Read And Download Book";
-            lblTitle.Click += lblTitle_Click;
             // 
             // btnBack
             // 
@@ -133,7 +130,6 @@
             Controls.Add(txtSearch);
             Name = "ReadDownloadForm";
             Text = "EduLib";
-            Load += ReadDownloadForm_Load;
             ((System.ComponentModel.ISupportInitialize)dgvBooks).EndInit();
             ResumeLayout(false);
             PerformLayout();

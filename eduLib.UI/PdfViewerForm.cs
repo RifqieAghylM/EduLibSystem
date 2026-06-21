@@ -44,13 +44,23 @@ namespace eduLib.UI
         {
             try
             {
-                // Begitu jendela baca ditutup, langsung hapus file PDF dari folder Temp
-                if (File.Exists(this._filePath))
+                // PENTING: Dispose WebView2 terlebih dahulu untuk melepaskan file lock
+                if (webView != null)
                 {
-                    File.Delete(this._filePath);
+                    webView.Dispose();
+                    webView = null;
+                }
+                // Hapus file temporary secara aman
+                if (!string.IsNullOrEmpty(_filePath) && File.Exists(_filePath))
+                {
+                    File.Delete(_filePath);
                 }
             }
-            catch { }
+            catch (IOException ioEx)
+            {
+                // Jangan biarkan catch kosong. Minimal catat ke Debug Log untuk tracing jika gagal
+                System.Diagnostics.Debug.WriteLine($"Gagal menghapus file temp: {ioEx.Message}");
+            }
         }
     }
 }

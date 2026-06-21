@@ -6,7 +6,7 @@ namespace eduLib.UI
     public partial class ReadDownloadForm : Form
     {
         private readonly string baseUrl = "https://localhost:7053/api/books";
-
+        private static readonly HttpClient client = new HttpClient();
         public ReadDownloadForm()
         {
             InitializeComponent();
@@ -23,44 +23,43 @@ namespace eduLib.UI
             }
 
             btnSearch.Enabled = false;
-            btnSearch.Text = "Mencari...";
+            btnSearch.Text = "Searching...";
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                try
+                // Keamanan: Proteksi URL dari karakter aneh/ilegal via EscapeDataString
+                string safeKeyword = Uri.EscapeDataString(keyword);
+                HttpResponseMessage response = await client.GetAsync($"{baseUrl}/search?keyword={safeKeyword}");
+
+                if (response.IsSuccessStatusCode)
                 {
-                    HttpResponseMessage response = await client.GetAsync($"{baseUrl}/search?keyword={keyword}");
+                    string jsonResult = await response.Content.ReadAsStringAsync();
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string jsonResult = await response.Content.ReadAsStringAsync();
+                    // Parse JSON dari API Backend
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var books = JsonSerializer.Deserialize<List<Book>>(jsonResult, options);
 
-                        // Parse JSON dari API Backend
-                        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                        var books = JsonSerializer.Deserialize<List<Book>>(jsonResult, options);
+                    dgvBooks.DataSource = books;
 
-                        dgvBooks.DataSource = books;
-
-                        // Sembunyikan kolom ID agar UI lebih bersih
-                        if (dgvBooks.Columns["Id"] != null) dgvBooks.Columns["Id"].Visible = false;
-                        if (dgvBooks.Columns["GridFsFileId"] != null) dgvBooks.Columns["GridFsFileId"].Visible = false;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Gagal mengambil data dari server.");
-                    }
+                    // Sembunyikan kolom ID agar UI lebih bersih
+                    if (dgvBooks.Columns["Id"] != null) dgvBooks.Columns["Id"].Visible = false;
+                    if (dgvBooks.Columns["GridFsFileId"] != null) dgvBooks.Columns["GridFsFileId"].Visible = false;
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Koneksi API Error: " + ex.Message);
+                    MessageBox.Show("Gagal mengambil data dari server.", "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Koneksi API Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             btnSearch.Enabled = true;
             btnSearch.Text = "Cari Buku";
         }
 
-        // --- 2. FITUR DOWNLOAD PERMANEN ---
+        // fitur download buku
         private async void btnDownload_Click(object sender, EventArgs e)
         {
             // 1. Mengambil gridFsId (bukan Id biasa) dan judul dari baris yang dipilih
@@ -75,36 +74,32 @@ namespace eduLib.UI
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string targetPath = saveFileDialog.FileName;
+                    btnDownload.Enabled = false; // Cegah spam-klik
 
-                    using (HttpClient client = new HttpClient())
+                    try
                     {
-                        try
+                        HttpResponseMessage response = await client.GetAsync($"{baseUrl}/download/{gridFsId}");
+
+                        if (response.IsSuccessStatusCode)
                         {
-                            // 2. Tembak ke endpoint download menggunakan gridFsId kalian
-                            // Sesuaikan kata "download" di bawah jika nama endpoint kalian berbeda (misal: /read/{gridFsId})
-                            HttpResponseMessage response = await client.GetAsync($"{baseUrl}/download/{gridFsId}");
+                            byte[] pdfBytes = await response.Content.ReadAsByteArrayAsync();
+                            await File.WriteAllBytesAsync(targetPath, pdfBytes); // Non-blocking I/O
 
-                            if (response.IsSuccessStatusCode)
-                            {
-                                byte[] pdfBytes = await response.Content.ReadAsByteArrayAsync();
-
-                                // Simpan file fisik PDF ke laptop
-                                File.WriteAllBytes(targetPath, pdfBytes);
-
-                                MessageBox.Show($"Buku \"{selectedTitle}\" berhasil diunduh dan disimpan!",
-                                                "Download Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-                            else
-                            {
-                                string errorDetails = await response.Content.ReadAsStringAsync();
-                                MessageBox.Show($"API Menolak Request!\nStatus: {response.StatusCode}\nDetail: {errorDetails}",
-                                                "Gagal Download", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            MessageBox.Show($"Buku \"{selectedTitle}\" berhasil diunduh!", "Download Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            MessageBox.Show("Koneksi API Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            string errorDetails = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show($"API Menolak Request!\nStatus: {response.StatusCode}\nDetail: {errorDetails}", "Gagal Download", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Koneksi API Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        btnDownload.Enabled = true;
                     }
                 }
             }
@@ -116,50 +111,43 @@ namespace eduLib.UI
             this.Close();
         }
 
-        // --- 3. FITUR BACA ONLINE (STREAM TO TEMP FILE) ---
+        // fitur read
         private async void btnRead_Click(object sender, EventArgs e)
         {
             if (!IsBookSelected(out string selectedId, out string selectedTitle)) return;
+            btnRead.Enabled = false;
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                try
+                HttpResponseMessage response = await client.GetAsync($"{baseUrl}/read/{selectedId}");
+
+                if (response.IsSuccessStatusCode)
                 {
-                    // Menggunakan endpoint /read/ sesuai API yang dibuat
-                    HttpResponseMessage response = await client.GetAsync($"{baseUrl}/read/{selectedId}");
+                    byte[] pdfBytes = await response.Content.ReadAsByteArrayAsync();
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        byte[] pdfBytes = await response.Content.ReadAsByteArrayAsync();
+                    // Keamanan & Robustness: Pastikan judul bersih dari karakter ilegal Windows (seperti :, \, / dll)
+                    string safeTitle = GetSafeFilename(selectedTitle);
+                    string tempFile = Path.Combine(Path.GetTempPath(), $"{safeTitle}_ReadOnline.pdf");
 
-                        // Buat file sementara (Temporary File) untuk dibaca
-                        string tempFile = Path.Combine(Path.GetTempPath(), $"{selectedTitle}_ReadOnline.pdf");
-                        File.WriteAllBytes(tempFile, pdfBytes);
+                    await File.WriteAllBytesAsync(tempFile, pdfBytes);
 
-                        System.Threading.Thread thread = new System.Threading.Thread(() =>
-                        {
-                            // Buat dan jalankan Form baca HD di thread khusus ini
-                            PdfViewerForm viewer = new PdfViewerForm(tempFile, selectedTitle);
-                            System.Windows.Forms.Application.Run(viewer); // Memberikan mesin loop terpisah agar rendering Edge lancar
-                        });
-
-                        // Kunci status thread menjadi STA murni demi kebutuhan WebView2
-                        thread.SetApartmentState(System.Threading.ApartmentState.STA);
-
-                        // Nyalakan layarnya
-                        thread.Start();
-                    }
-                    else
-                    {
-                        // cek error dari API
-                        string errorDetails = await response.Content.ReadAsStringAsync();
-                        MessageBox.Show($"API Menolak Request!\nStatus: {response.StatusCode}\nDetail: {errorDetails}", "Error dari Server");
-                    }
+                    // Panggil langsung di UI Thread. WebView2 asinkronus dari sananya, jadi tidak akan macet.
+                    PdfViewerForm viewer = new PdfViewerForm(tempFile, selectedTitle);
+                    viewer.Show();
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Koneksi API Error: " + ex.Message);
+                    string errorDetails = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"API Menolak Request!\nStatus: {response.StatusCode}\nDetail: {errorDetails}", "Error dari Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Koneksi API Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnRead.Enabled = true;
             }
         }
 
@@ -185,25 +173,14 @@ namespace eduLib.UI
             }
             return true;
         }
-
-        private void ReadDownloadForm_Load(object sender, EventArgs e)
+        // Fungsi membersihkan karakter ilegal Windows untuk nama file
+        private string GetSafeFilename(string filename)
         {
-
-        }
-
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dgvBooks_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                filename = filename.Replace(c, '_');
+            }
+            return filename;
         }
     }
 }
