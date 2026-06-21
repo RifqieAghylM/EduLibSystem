@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-
             SuspendLayout();
-
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "PdfViewerForm";
+            // 
+            // PdfViewerForm
+            // 
+            AutoScaleMode = AutoScaleMode.None;
+            ClientSize = new Size(982, 703);
+            Name = "PdfViewerForm";
+            Text = "PdfViewerForm";
+            ResumeLayout(false);
 
         }
 

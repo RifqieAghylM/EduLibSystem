@@ -1,11 +1,16 @@
-﻿using Microsoft.Web.WebView2.WinForms;
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
+using Microsoft.Web.WebView2.WinForms;
 
 namespace eduLib.UI
 {
     public partial class PdfViewerForm : Form
     {
-        private WebView2 webView;
+        // Ganti WebView2 dengan WebBrowser bawaan Windows .NET Framework (Anti-Blank)
+        private WebView2 webBrowser;
         private string _filePath;
+
         public PdfViewerForm(string filePath, string bookTitle)
         {
             InitializeComponent();
@@ -15,42 +20,61 @@ namespace eduLib.UI
             this.Height = 750;
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Inisialisasi WebView2
-            webView = new WebView2();
-            webView.Dock = DockStyle.Fill;
-            this.Controls.Add(webView);
+            // Inisialisasi Kontrol WebBrowser Standar
+            webBrowser = new WebView2();
+            webBrowser.Dock = DockStyle.Fill;
+            this.Controls.Add(webBrowser);
 
-            // Jalankan fungsi asinkronus untuk merender PDF
-            InitializeWebView(filePath);
+            // Jalankan penayangan dokumen
+            InitializePdfView(filePath);
         }
-        private async void InitializeWebView(string filePath)
+
+        private async void InitializePdfView(string filePath)
         {
             try
             {
-                // Tunggu mesin Edge Chromium di latar belakang siap
-                await webView.EnsureCoreWebView2Async(null);
-                // Matikan klik kanan dan tombol F12 biar user gak bisa inspect engine browser
-                webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
-                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                // Buka file PDF lokal dengan kualitas tajam murni
-                webView.CoreWebView2.Navigate(filePath);
+                // validasi file PDF sebelum ditampilkan
+                if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0)
+                {
+                    MessageBox.Show("File PDF tidak ditemukan atau datanya kosong dari server API!",
+                                    "File Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string pdfUri = new Uri(filePath).AbsoluteUri;
+
+                string fullScreenPdfUri = $"{pdfUri}#view=FitH";
+
+                await webBrowser.EnsureCoreWebView2Async(null);
+                webBrowser.CoreWebView2.Settings.AreDevToolsEnabled = false;
+                webBrowser.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                webBrowser.CoreWebView2.Navigate(fullScreenPdfUri);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Gagal memuat engine render PDF: " + ex.Message);
+                MessageBox.Show("Gagal memuat dokumen PDF: " + ex.Message, "Render Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void PdfViewerForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             try
             {
-                // Begitu jendela baca ditutup, langsung hapus file PDF dari folder Temp
+                // Bersihkan komponen dari memori RAM
+                if (webBrowser != null)
+                {
+                    webBrowser.Dispose();
+                }
+
                 if (File.Exists(this._filePath))
                 {
                     File.Delete(this._filePath);
                 }
             }
-            catch { }
+            catch (IOException ioEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"Gagal menghapus file temp: {ioEx.Message}");
+            }
         }
     }
 }
