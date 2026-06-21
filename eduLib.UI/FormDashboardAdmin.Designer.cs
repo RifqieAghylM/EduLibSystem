@@ -26,6 +26,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+
         private void InitializeComponent()
         {
             lbltitledashboardadmin = new Label();
@@ -33,7 +34,6 @@
             btnmanagebook = new Button();
             btnreadanddownloadbook = new Button();
             btnbookmark = new Button();
-            btnhistory = new Button();
             btnreview = new Button();
             btnlogout = new Button();
             SuspendLayout();
@@ -42,7 +42,7 @@
             // 
             lbltitledashboardadmin.AutoSize = true;
             lbltitledashboardadmin.Font = new Font("Showcard Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lbltitledashboardadmin.Location = new Point(201, 26);
+            lbltitledashboardadmin.Location = new Point(266, 32);
             lbltitledashboardadmin.Name = "lbltitledashboardadmin";
             lbltitledashboardadmin.Size = new Size(395, 50);
             lbltitledashboardadmin.TabIndex = 0;
@@ -56,7 +56,6 @@
             lblwelcomeadmin.Size = new Size(152, 25);
             lblwelcomeadmin.TabIndex = 1;
             lblwelcomeadmin.Text = "Welcome, Admin!";
-            lblwelcomeadmin.Click += lblwelcomeadmin_Click;
             // 
             // btnmanagebook
             // 
@@ -80,21 +79,12 @@
             // 
             // btnbookmark
             // 
-            btnbookmark.Location = new Point(303, 337);
+            btnbookmark.Location = new Point(63, 337);
             btnbookmark.Name = "btnbookmark";
             btnbookmark.Size = new Size(159, 106);
             btnbookmark.TabIndex = 7;
             btnbookmark.Text = "Bookmark";
             btnbookmark.UseVisualStyleBackColor = true;
-            // 
-            // btnhistory
-            // 
-            btnhistory.Location = new Point(60, 337);
-            btnhistory.Name = "btnhistory";
-            btnhistory.Size = new Size(152, 106);
-            btnhistory.TabIndex = 8;
-            btnhistory.Text = "History";
-            btnhistory.UseVisualStyleBackColor = true;
             // 
             // btnreview
             // 
@@ -107,9 +97,9 @@
             // 
             // btnlogout
             // 
-            btnlogout.Location = new Point(557, 337);
+            btnlogout.Location = new Point(303, 337);
             btnlogout.Name = "btnlogout";
-            btnlogout.Size = new Size(137, 106);
+            btnlogout.Size = new Size(159, 106);
             btnlogout.TabIndex = 10;
             btnlogout.Text = "Log Out";
             btnlogout.UseVisualStyleBackColor = true;
@@ -122,7 +112,6 @@
             ClientSize = new Size(778, 544);
             Controls.Add(btnlogout);
             Controls.Add(btnreview);
-            Controls.Add(btnhistory);
             Controls.Add(btnbookmark);
             Controls.Add(btnreadanddownloadbook);
             Controls.Add(btnmanagebook);
@@ -142,7 +131,6 @@
         private Button btnmanagebook;
         private Button btnreadanddownloadbook;
         private Button btnbookmark;
-        private Button btnhistory;
         private Button btnreview;
         private Button btnlogout;
     }

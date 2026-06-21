@@ -10,8 +10,7 @@ namespace eduLib.UI
             InitializeComponent();
         }
 
-        // ── UPLOAD BOOK ──
-        private void btnuploadbuku_Click(object sender, EventArgs e)
+        private void btnuploadbook_Click(object sender, EventArgs e)
         {
             EduLibAdmin1 uploadBook = new EduLibAdmin1();
 
@@ -22,8 +21,7 @@ namespace eduLib.UI
             uploadBook.ShowDialog();
         }
 
-        // ── EDIT BOOK ──
-        private void btneditbuku_Click(object sender, EventArgs e)
+        private void btnupdateanddeletebook_Click(object sender, EventArgs e)
         {
             KelolaAdmin editBook = new KelolaAdmin();
 

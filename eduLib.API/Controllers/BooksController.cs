@@ -296,13 +296,7 @@ namespace eduLib.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromQuery] string username, [FromQuery] string password)
         {
-            var users = new List<User>
-        {
-            new User { Username = "admin", Password = "admin123", UserRole = Role.Admin },
-            new User { Username = "user",  Password = "user123",  UserRole = Role.User  }
-        };
-
-            var auth = new AuthService(users);
+            var auth = new AuthService();
             try
             {
                 var user = auth.Login(username, password);
@@ -315,9 +309,13 @@ namespace eduLib.API.Controllers
                     Menu = auth.GetUserMenus(user)
                 });
             }
-            catch
+            catch (UnauthorizedAccessException)
             {
                 return Unauthorized("Username atau Password salah.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Forbid(ex.Message);
             }
         }
     }

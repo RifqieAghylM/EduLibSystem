@@ -15,14 +15,12 @@ namespace eduLib.UI
             lblwelcomeadmin.Text = "Welcome, Admin!";
         }
 
-        // ── MANAGE BOOK ──
         private void btnmanagebook_Click(object sender, EventArgs e)
         {
             FormManageBook formManage = new FormManageBook();
             formManage.ShowDialog();
         }
 
-        // ── READ AND DOWNLOAD BOOK ──
         private void btnreadanddownloadbook_Click(object sender, EventArgs e)
         {
             // Instansiasi/membuat objek dari form halaman milikmu
@@ -35,25 +33,16 @@ namespace eduLib.UI
             readDownloadPage.ShowDialog();
         }
 
-        // ── REVIEW ──
         private void btnreview_Click(object sender, EventArgs e)
         {
-            // TODO: Review
+
         }
 
-        // ── HISTORY ──
-        private void btnhistory_Click(object sender, EventArgs e)
-        {
-            // TODO: History
-        }
-
-        // ── BOOKMARK ──
         private void btnbookmark_Click(object sender, EventArgs e)
         {
-            // TODO: Bookmark
+           
         }
 
-        // ── LOGOUT ──
         private void btnlogout_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(
@@ -64,7 +53,7 @@ namespace eduLib.UI
             );
 
             if (confirm == DialogResult.Yes)
-                this.Close(); // FormLogin akan muncul kembali
+                this.Close(); 
         }
 
         private void lblwelcomeadmin_Click(object sender, EventArgs e)
