@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using eduLib.Core.Entities;
 
 namespace eduLib.UI
 {
@@ -10,28 +11,106 @@ namespace eduLib.UI
     {
         private readonly HttpClient _client = new HttpClient();
 
+        // GANTI sesuai port API kamu (cek Properties/launchSettings.json di eduLib.API)
+        private const string ApiBaseUrl = "https://localhost:7053/api";
 
-        private const string BaseUrl = "https://localhost:7053/api/Tracking";
+        // Flag: true hanya jika BookId diisi lewat klik tabel hasil pencarian
+        private bool _isBookSelectedFromTable = false;
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        //  BOOKMARK 
+        // ===== SEARCH BUKU =====
+        private async void btnSearch_Click(object sender, EventArgs e)
+        {
+            var keyword = txtSearch.Text.Trim();
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                MessageBox.Show("Masukkan kata kunci pencarian (judul atau penulis).");
+                return;
+            }
+
+            // Reset pilihan setiap kali search baru dilakukan
+            ResetBookSelection();
+
+            try
+            {
+                var url = $"{ApiBaseUrl}/Books/search?keyword={Uri.EscapeDataString(keyword)}";
+                var response = await _client.GetAsync(url);
+                var json = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Gagal mencari buku: " + json);
+                    dgvBooks.DataSource = null;
+                    return;
+                }
+
+                var books = JsonSerializer.Deserialize<List<Book>>(json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Book>();
+
+                dgvBooks.DataSource = books;
+
+                // Sembunyikan kolom yang tidak relevan ditampilkan ke user
+                HideColumnIfExists("PdfPath");
+                HideColumnIfExists("GridFsFileId");
+
+                if (books.Count == 0)
+                {
+                    MessageBox.Show("Buku tidak ditemukan di database.");
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Gagal terhubung ke server. Pastikan API sedang berjalan.");
+            }
+        }
+
+        private void HideColumnIfExists(string columnName)
+        {
+            if (dgvBooks.Columns.Contains(columnName))
+                dgvBooks.Columns[columnName].Visible = false;
+        }
+
+        private void dgvBooks_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            if (dgvBooks.Rows[e.RowIndex].DataBoundItem is not Book selectedBook) return;
+
+            txtBookId.Text = selectedBook.Id;
+            _isBookSelectedFromTable = true;
+        }
+
+        private void ResetBookSelection()
+        {
+            txtBookId.Text = string.Empty;
+            _isBookSelectedFromTable = false;
+            lblBookmarkResult.Text = "Hasil: -";
+            lblProgressResult.Text = "Status: -";
+            progressBar1.Value = 0;
+        }
+
+        // ===== BOOKMARK =====
         private async void btnSaveBookmark_Click(object sender, EventArgs e)
         {
-            if (!ValidateBookId()) return;
+            if (!ValidateBookSelected(lblBookmarkResult)) return;
 
             if (!int.TryParse(txtBookmarkPage.Text, out int page))
             {
-                MessageBox.Show("Halaman harus berupa angka.");
+                lblBookmarkResult.Text = "Gagal: Halaman harus berupa angka.";
+                return;
+            }
+            if (page < 0)
+            {
+                lblBookmarkResult.Text = "Gagal: Halaman tidak boleh negatif.";
                 return;
             }
 
             try
             {
-                var url = $"{BaseUrl}/bookmark?bookId={txtBookId.Text}&page={page}";
+                var url = $"{ApiBaseUrl}/Tracking/bookmark?bookId={Uri.EscapeDataString(txtBookId.Text)}&page={page}";
                 var response = await _client.PostAsync(url, null);
                 var result = await response.Content.ReadAsStringAsync();
 
@@ -39,19 +118,19 @@ namespace eduLib.UI
                     ? $"Tersimpan: halaman {page}"
                     : $"Gagal: {result}";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                lblBookmarkResult.Text = "Gagal: tidak bisa terhubung ke server.";
             }
         }
 
         private async void btnGetBookmark_Click(object sender, EventArgs e)
         {
-            if (!ValidateBookId()) return;
+            if (!ValidateBookSelected(lblBookmarkResult)) return;
 
             try
             {
-                var url = $"{BaseUrl}/bookmark?bookId={txtBookId.Text}";
+                var url = $"{ApiBaseUrl}/Tracking/bookmark?bookId={Uri.EscapeDataString(txtBookId.Text)}";
                 var response = await _client.GetAsync(url);
                 var json = await response.Content.ReadAsStringAsync();
 
@@ -66,27 +145,45 @@ namespace eduLib.UI
                     lblBookmarkResult.Text = $"Gagal: {json}";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                lblBookmarkResult.Text = "Gagal: tidak bisa terhubung ke server.";
             }
         }
 
-        //  READING PROGRESS 
+        // ===== READING PROGRESS =====
         private async void btnUpdateProgress_Click(object sender, EventArgs e)
         {
-            if (!ValidateBookId()) return;
+            if (!ValidateBookSelected(lblProgressResult)) return;
 
             if (!int.TryParse(txtCurrentPage.Text, out int currentPage) ||
                 !int.TryParse(txtTotalPage.Text, out int totalPage))
             {
-                MessageBox.Show("Halaman harus berupa angka.");
+                lblProgressResult.Text = "Gagal: Halaman harus berupa angka.";
+                return;
+            }
+
+            if (currentPage < 0 || totalPage < 0)
+            {
+                lblProgressResult.Text = "Gagal: Halaman tidak boleh negatif.";
+                return;
+            }
+
+            if (totalPage == 0)
+            {
+                lblProgressResult.Text = "Gagal: Total halaman harus lebih dari 0.";
+                return;
+            }
+
+            if (currentPage > totalPage)
+            {
+                lblProgressResult.Text = "Gagal: Halaman saat ini tidak valid.";
                 return;
             }
 
             try
             {
-                var url = $"{BaseUrl}/reading-progress?bookId={txtBookId.Text}&currentPage={currentPage}&totalPage={totalPage}";
+                var url = $"{ApiBaseUrl}/Tracking/reading-progress?bookId={Uri.EscapeDataString(txtBookId.Text)}&currentPage={currentPage}&totalPage={totalPage}";
                 var response = await _client.PostAsync(url, null);
                 var json = await response.Content.ReadAsStringAsync();
 
@@ -104,19 +201,19 @@ namespace eduLib.UI
                     lblProgressResult.Text = $"Gagal: {json}";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                lblProgressResult.Text = "Gagal: tidak bisa terhubung ke server.";
             }
         }
 
         private async void btnGetProgress_Click(object sender, EventArgs e)
         {
-            if (!ValidateBookId()) return;
+            if (!ValidateBookSelected(lblProgressResult)) return;
 
             try
             {
-                var url = $"{BaseUrl}/reading-progress?bookId={txtBookId.Text}";
+                var url = $"{ApiBaseUrl}/Tracking/reading-progress?bookId={Uri.EscapeDataString(txtBookId.Text)}";
                 var response = await _client.GetAsync(url);
                 var json = await response.Content.ReadAsStringAsync();
 
@@ -133,21 +230,22 @@ namespace eduLib.UI
                 }
                 else
                 {
-                    lblProgressResult.Text = "Belum ada data progress";
+                    lblProgressResult.Text = "Gagal: Belum ada data progress.";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                lblProgressResult.Text = "Gagal: tidak bisa terhubung ke server.";
             }
         }
 
         // ===== Helper =====
-        private bool ValidateBookId()
+        // Cek bahwa BookId benar-benar dipilih lewat klik tabel, bukan cuma "tidak kosong"
+        private bool ValidateBookSelected(Label resultLabel)
         {
-            if (string.IsNullOrWhiteSpace(txtBookId.Text))
+            if (!_isBookSelectedFromTable || string.IsNullOrWhiteSpace(txtBookId.Text))
             {
-                MessageBox.Show("Book ID tidak boleh kosong.");
+                resultLabel.Text = "Gagal: Pilih buku dari hasil pencarian terlebih dahulu.";
                 return false;
             }
             return true;
