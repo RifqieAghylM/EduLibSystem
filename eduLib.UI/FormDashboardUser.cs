@@ -25,11 +25,6 @@ namespace eduLib.UI
    
         }
 
-        private void btnhistory_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnreview_Click(object sender, EventArgs e)
         {
   
