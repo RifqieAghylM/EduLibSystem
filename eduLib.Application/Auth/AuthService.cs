@@ -8,68 +8,50 @@ namespace eduLib.Application.Auth
 {
     public class AuthService
     {
-        private readonly AuthStateMachine _stateMachine;
-        private readonly List<User> _mockDatabase; 
-
-        public AuthService(List<User> mockDatabase)
+        // Static agar data user konsisten di seluruh aplikasi
+        private static readonly List<User> _sharedMockDatabase = new List<User>
         {
-            // DbC: Precondition
-            if (mockDatabase == null)
-                throw new ArgumentNullException(nameof(mockDatabase), "Database simulasi tidak boleh null.");
+            new User { Username = "admin", Password = "admin123", UserRole = Role.Admin },
+            new User { Username = "azka", Password = "azka123", UserRole = Role.Admin },
+            new User { Username = "user",  Password = "user123",  UserRole = Role.User },
+            new User { Username = "rifqie",  Password = "rifqie123",  UserRole = Role.User }
+        };
 
-            _stateMachine = new AuthStateMachine();
-            _mockDatabase = mockDatabase;
-        }
+        // Static agar status (Locked/LoggedOut) tersimpan global
+        private static readonly AuthStateMachine _stateMachine = new AuthStateMachine();
+
+        public AuthService() { }
 
         public SessionState GetCurrentState() => _stateMachine.CurrentState;
 
         public User Login(string username, string password)
         {
-            // DbC: Preconditions
-            if (string.IsNullOrWhiteSpace(username))
-                throw new ArgumentException("Username tidak boleh kosong atau spasi.");
-            if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("Password tidak boleh kosong.");
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException("Username atau Password tidak boleh kosong.");
 
             if (_stateMachine.CurrentState == SessionState.Locked)
-            {
                 throw new InvalidOperationException("Akun terkunci karena terlalu banyak percobaan gagal.");
-            }
 
-            var user = _mockDatabase.FirstOrDefault(u =>
+            var user = _sharedMockDatabase.FirstOrDefault(u =>
                 u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)
                 && u.Password == password);
-            bool isSuccess = user != null;
 
+            bool isSuccess = user != null;
             _stateMachine.Transition(isSuccess);
 
             if (!isSuccess)
-            {
                 throw new UnauthorizedAccessException("Username atau password salah.");
-            }
-
-            // DbC: Postcondition
-            if (_stateMachine.CurrentState != SessionState.LoggedIn)
-            {
-                throw new Exception("Terjadi kesalahan internal: State gagal bertransisi ke LoggedIn.");
-            }
 
             return user;
         }
 
+        public void Logout() => _stateMachine.Logout();
+
         public List<string> GetUserMenus(User user)
         {
-            // DbC: Preconditions
-            if (user == null) throw new ArgumentNullException(nameof(user));
             if (_stateMachine.CurrentState != SessionState.LoggedIn)
-                throw new InvalidOperationException("Sesi tidak valid. Harus login untuk melihat menu.");
-
+                throw new InvalidOperationException("Sesi tidak valid.");
             return RoleAccessTable.GetAccessibleMenus(user.UserRole);
-        }
-
-        public void Logout()
-        {
-            _stateMachine.Logout();
         }
     }
 }

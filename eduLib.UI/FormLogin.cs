@@ -2,7 +2,6 @@ using eduLib.Application.Auth;
 using eduLib.Core.Entities;
 using eduLib.Core.Enums;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -10,43 +9,30 @@ namespace eduLib.UI
 {
     public partial class FormLogin : Form
     {
+        // Gunakan instance yang sama untuk seluruh UI
         private readonly AuthService _authService;
         private bool _passwordVisible = false;
         private Button btnEye;
-
-        private static readonly List<User> _mockUsers = new List<User>
-        {
-            new User { Username = "admin", Password = "admin123", UserRole = Role.Admin },
-            new User { Username = "user",  Password = "user123",  UserRole = Role.User  }
-        };
 
         public FormLogin()
         {
             InitializeComponent();
             txtpassword.UseSystemPasswordChar = true;
             SetupEyeButton();
-            _authService = new AuthService(_mockUsers);
+
+            _authService = new AuthService();
         }
 
         private void SetupEyeButton()
         {
             btnEye = new Button();
-
             int btnW = 28;
-
             btnEye.Size = new Size(btnW, txtpassword.Height);
-            btnEye.Location = new Point(
-                txtpassword.Right - btnW - 2,
-                txtpassword.Top
-            );
-
+            btnEye.Location = new Point(txtpassword.Right - btnW - 2, txtpassword.Top);
             btnEye.FlatStyle = FlatStyle.Flat;
             btnEye.FlatAppearance.BorderSize = 0;
-            btnEye.FlatAppearance.BorderColor = Color.White;
-            btnEye.FlatAppearance.MouseOverBackColor = Color.FromArgb(225, 225, 225);
             btnEye.BackColor = Color.White;
             btnEye.Text = "🔒";
-            btnEye.Font = new Font("Segoe UI Emoji", 9);
             btnEye.Cursor = Cursors.Hand;
             btnEye.TabStop = false;
             btnEye.Click += BtnEye_Click;
@@ -68,6 +54,7 @@ namespace eduLib.UI
             string username = txtusername.Text.Trim();
             string password = txtpassword.Text;
 
+            // Validasi Input Kosong
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Username dan Password tidak boleh kosong!",
@@ -77,9 +64,12 @@ namespace eduLib.UI
 
             try
             {
+                // Login via AuthService
                 var user = _authService.Login(username, password);
+
                 this.Hide();
 
+                // Navigasi berdasarkan Role
                 if (user.UserRole == Role.Admin)
                 {
                     var adminDashboard = new FormDashboardAdmin();
@@ -102,6 +92,7 @@ namespace eduLib.UI
             }
             catch (InvalidOperationException ex)
             {
+                // Ini akan menangkap pesan "Akun terkunci" dari state machine
                 MessageBox.Show(ex.Message, "Akun Terkunci",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
