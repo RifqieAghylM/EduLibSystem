@@ -9,6 +9,8 @@ namespace eduLib.UI
         {
             InitializeComponent();
             this.btnreview.Click += new System.EventHandler(this.btnreview_Click);
+
+            this.btnbookmark.Click += new System.EventHandler(this.btnbookmark_Click);
         }
 
         private void FormDashboard_Load(object sender, EventArgs e)
@@ -35,7 +37,6 @@ namespace eduLib.UI
         }
 
         // ── REVIEW ──
-        // ── REVIEW ──
         private void btnreview_Click(object sender, EventArgs e)
         {
             // 1. Buat objek FormReview sambil melempar parameter role "Admin"
@@ -55,7 +56,12 @@ namespace eduLib.UI
 
         private void btnbookmark_Click(object sender, EventArgs e)
         {
-           
+            // Panggil FormBookmark dengan menyertakan parameter Admin
+            FormBookmark bookmarkPage = new FormBookmark("Admin");
+            bookmarkPage.FormClosed += (s, args) => this.Show();
+            bookmarkPage.StartPosition = FormStartPosition.CenterScreen;
+            bookmarkPage.Show();
+            this.Hide(); // Sembunyikan dashboard utama
         }
 
         private void btnlogout_Click(object sender, EventArgs e)

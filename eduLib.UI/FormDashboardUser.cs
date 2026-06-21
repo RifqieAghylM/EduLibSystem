@@ -9,6 +9,8 @@ namespace eduLib.UI
         {
             InitializeComponent();
             this.btnreview.Click += new System.EventHandler(this.btnreview_Click);
+
+            this.btnbookmark.Click += new System.EventHandler(this.btnbookmark_Click);
         }
 
         private void FormDashboard_Load(object sender, EventArgs e)
@@ -30,7 +32,12 @@ namespace eduLib.UI
 
         private void btnbookmark_Click(object sender, EventArgs e)
         {
-   
+            // Panggil FormBookmark dengan menyertakan parameter User
+            FormBookmark bookmarkPage = new FormBookmark("User");
+            bookmarkPage.FormClosed += (s, args) => this.Show();
+            bookmarkPage.StartPosition = FormStartPosition.CenterScreen;
+            bookmarkPage.Show();
+            this.Hide(); // Sembunyikan dashboard utama
         }
 
         // ── HISTORY ──

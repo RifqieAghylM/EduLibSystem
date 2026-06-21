@@ -46,11 +46,13 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Showcard Gothic", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.ImageAlign = ContentAlignment.TopCenter;
             label1.Location = new Point(228, 36);
             label1.Name = "label1";
             label1.Size = new Size(327, 40);
             label1.TabIndex = 0;
             label1.Text = "BOOK MANAGEMENT";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label2
             // 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using eduLib.Infrastructure.API;
 using Newtonsoft.Json;
 
 namespace eduLib.UI
@@ -10,7 +11,7 @@ namespace eduLib.UI
     public partial class FormViewReviews : Form
     {
         private readonly HttpClient _httpClient;
-        private const string ApiBaseUrl = "https://localhost:7053/api/Books";
+        private readonly string ApiBaseUrl = ApiHelper.GetBaseUrl();
 
         private readonly FormReview _formAsal;
 

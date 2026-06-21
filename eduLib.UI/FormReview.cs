@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using eduLib.Infrastructure.API;
+
 
 namespace eduLib.UI
 {
     public partial class FormReview : Form
     {
         private readonly HttpClient _httpClient;
-        private const string ApiBaseUrl = "https://localhost:7053/api/Books";
+        private readonly string ApiBaseUrl = ApiHelper.GetBaseUrl();
 
         // 1. Tambahkan variabel untuk menyimpan peran (Role) user saat ini
         private string _currentUserRole;

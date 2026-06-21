@@ -1,11 +1,13 @@
 ﻿using eduLib.Core.Entities;
 using System.Text.Json;
+using eduLib.Infrastructure.API;
+
 
 namespace eduLib.UI
 {
     public partial class ReadDownloadForm : Form
     {
-        private readonly string baseUrl = "https://localhost:7053/api/books";
+        private readonly string baseUrl = ApiHelper.GetBaseUrl();
         private static readonly HttpClient client = new HttpClient();
         public ReadDownloadForm()
         {
