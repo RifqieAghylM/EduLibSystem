@@ -21,7 +21,7 @@ namespace eduLib.UI
             btnSearchReview.Click += btnSearchReview_Click;
         }
 
-        // TWEAK NAVIGASI: Overload constructor untuk menerima instansi FormReview asal
+        // NAVIGASI: Overload constructor untuk menerima instansi FormReview asal
         public FormViewReviews(FormReview formAsal) : this()
         {
             _formAsal = formAsal;
@@ -29,7 +29,7 @@ namespace eduLib.UI
             btnBack.Click += btnBack_Click;
         }
 
-        // --- EVENT HANDLER NAVIGASI: Kembali ke FormReview ---
+        // EVENT HANDLER NAVIGASI: Kembali ke FormReview
         private void btnBack_Click(object sender, EventArgs e)
         {
             if (_formAsal != null)
