@@ -52,20 +52,20 @@
             label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.Location = new Point(12, 131);
             label2.Name = "label2";
-            label2.Size = new Size(159, 20);
+            label2.Size = new Size(174, 20);
             label2.TabIndex = 1;
-            label2.Text = "Masukkan Judul Buku";
+            label2.Text = "Masukkan Judul/Penulis";
             // 
             // txtSearchTitle
             // 
-            txtSearchTitle.Location = new Point(177, 128);
+            txtSearchTitle.Location = new Point(192, 128);
             txtSearchTitle.Name = "txtSearchTitle";
-            txtSearchTitle.Size = new Size(556, 27);
+            txtSearchTitle.Size = new Size(555, 27);
             txtSearchTitle.TabIndex = 2;
             // 
             // btnSearchReview
             // 
-            btnSearchReview.Location = new Point(177, 395);
+            btnSearchReview.Location = new Point(192, 386);
             btnSearchReview.Name = "btnSearchReview";
             btnSearchReview.Size = new Size(94, 29);
             btnSearchReview.TabIndex = 3;
@@ -75,14 +75,14 @@
             // lstReviewsDisplay
             // 
             lstReviewsDisplay.FormattingEnabled = true;
-            lstReviewsDisplay.Location = new Point(177, 180);
+            lstReviewsDisplay.Location = new Point(192, 176);
             lstReviewsDisplay.Name = "lstReviewsDisplay";
-            lstReviewsDisplay.Size = new Size(556, 204);
+            lstReviewsDisplay.Size = new Size(555, 204);
             lstReviewsDisplay.TabIndex = 4;
             // 
             // btnBack
             // 
-            btnBack.Location = new Point(639, 395);
+            btnBack.Location = new Point(653, 400);
             btnBack.Name = "btnBack";
             btnBack.Size = new Size(94, 29);
             btnBack.TabIndex = 5;

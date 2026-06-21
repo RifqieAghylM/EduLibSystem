@@ -11,7 +11,7 @@ namespace eduLib.UI
     {
         private readonly HttpClient _httpClient;
         private const string ApiBaseUrl = "https://localhost:7053/api/Books";
-        
+
         // Menampung referensi objek form pemanggil
         private readonly FormReview _formAsal;
 
@@ -27,7 +27,7 @@ namespace eduLib.UI
         public FormViewReviews(FormReview formAsal) : this()
         {
             _formAsal = formAsal;
-            
+
             // Mendaftarkan tombol back untuk navigasi pulang
             btnBack.Click += btnBack_Click;
         }
@@ -40,7 +40,7 @@ namespace eduLib.UI
                 // Memunculkan kembali halaman input ulasan yang disembunyikan
                 _formAsal.Show();
             }
-            // Menutup form pencarian ini demi efisiensi resource memori
+            // Menutup form pencarian ini, kembali dengan aman ke FormReview
             this.Close();
         }
 
@@ -51,13 +51,16 @@ namespace eduLib.UI
             return hasLetterRegex.IsMatch(text);
         }
 
+        /// <summary>
+        /// EVENT HANDLER: Mencari Ulasan Fleksibel Berdasarkan Judul / Penulis (Parameterization di level GUI)
+        /// </summary>
         private async void btnSearchReview_Click(object sender, EventArgs e)
         {
-            string searchTitle = txtSearchTitle.Text.Trim();
+            string searchKeyword = txtSearchTitle.Text.Trim();
 
-            if (!IsInputValid(searchTitle))
+            if (!IsInputValid(searchKeyword))
             {
-                MessageBox.Show("Format pencarian salah! Input judul tidak boleh hanya berupa angka. Harus mengandung huruf.",
+                MessageBox.Show("Format pencarian salah! Input tidak boleh hanya berupa angka atau kosong. Harus mengandung huruf.",
                                 "Secure Coding Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -66,56 +69,100 @@ namespace eduLib.UI
 
             try
             {
-                HttpResponseMessage response = await _httpClient.GetAsync($"{ApiBaseUrl}/{searchTitle}/reviews");
+                // 1. Tembak endpoint katalog umum untuk mendapatkan daftar buku
+                string searchUrl = $"{ApiBaseUrl}/search?keyword={Uri.EscapeDataString(searchKeyword)}";
+                HttpResponseMessage searchResponse = await _httpClient.GetAsync(searchUrl);
 
-                if (response.IsSuccessStatusCode)
+                if (!searchResponse.IsSuccessStatusCode)
                 {
-                    string jsonResult = await response.Content.ReadAsStringAsync();
-                    var reviews = JsonConvert.DeserializeObject<List<dynamic>>(jsonResult);
+                    MessageBox.Show("Terjadi kesalahan sistem saat menarik data dari backend.", "Error (400)", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                    if (reviews == null || reviews.Count == 0)
+                string searchJson = await searchResponse.Content.ReadAsStringAsync();
+                var foundBooks = JsonConvert.DeserializeObject<List<dynamic>>(searchJson);
+
+                if (foundBooks == null || foundBooks.Count == 0)
+                {
+                    MessageBox.Show($"Buku atau Penulis dengan kata kunci '{searchKeyword}' tidak ditemukan di sistem!",
+                                    "Tidak Ditemukan (404)", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                bool totalReviewsFound = false;
+
+                // 2. Looping setiap buku yang ditemukan di katalog
+                foreach (var book in foundBooks)
+                {
+                    string currentTargetTitle = book.title;
+
+                    // Ambil semua ulasan yang ditarik dari backend
+                    string reviewUrl = $"{ApiBaseUrl}/{Uri.EscapeDataString(currentTargetTitle)}/reviews";
+                    HttpResponseMessage reviewResponse = await _httpClient.GetAsync(reviewUrl);
+
+                    if (reviewResponse.IsSuccessStatusCode)
                     {
-                        lstReviewsDisplay.Items.Add("Belum ada ulasan untuk buku ini. Jadilah yang pertama mengulas!");
-                        return;
-                    }
+                        string reviewJson = await reviewResponse.Content.ReadAsStringAsync();
+                        var allReviews = JsonConvert.DeserializeObject<List<dynamic>>(reviewJson);
 
-                    var bookInfo = reviews[0].bookDetails;
-
-                    lstReviewsDisplay.Items.Add($"=== DETAIL BUKU ===");
-                    lstReviewsDisplay.Items.Add($"Judul   : {bookInfo.title}");
-                    lstReviewsDisplay.Items.Add($"Penulis : {bookInfo.author}");
-                    lstReviewsDisplay.Items.Add($"Tahun   : {bookInfo.year}");
-                    lstReviewsDisplay.Items.Add("=========================================================");
-                    lstReviewsDisplay.Items.Add("");
-
-                    foreach (var r in reviews)
-                    {
-                        string username = r.username;
-                        string comment = r.comment;
-                        string dateStr = r.date;
-
-                        if (DateTime.TryParse(dateStr, out DateTime parsedDate))
+                        if (allReviews != null && allReviews.Count > 0)
                         {
-                            lstReviewsDisplay.Items.Add($"[{parsedDate.ToString("dd-MM-yyyy HH:mm")}] @{username} menulis:");
-                        }
-                        else
-                        {
-                            lstReviewsDisplay.Items.Add($"[@{username} menulis:]");
-                        }
+                            // FILTER KETAT (EXACT MATCH): Menyaring ulasan agar HANYA mengambil yang judulnya sama persis 
+                            // dengan target judul looping saat ini. Ini mencegah ulasan "kpl bisa 12" bocor ke "kpl bisa".
+                            var filteredReviews = new List<dynamic>();
+                            foreach (var r in allReviews)
+                            {
+                                string reviewBookTitle = r.bookDetails?.title;
+                                if (reviewBookTitle != null && reviewBookTitle.Equals(currentTargetTitle, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    filteredReviews.Add(r);
+                                }
+                            }
 
-                        lstReviewsDisplay.Items.Add($"   > \"{comment}\"");
-                        lstReviewsDisplay.Items.Add("");
+                            // Jika setelah difilter ketat ulasannya ada, baru kita gambar ke ListBox
+                            if (filteredReviews.Count > 0)
+                            {
+                                totalReviewsFound = true;
+                                var bookInfo = filteredReviews[0].bookDetails;
+
+                                // FORMAT TAMPILAN SESUAI FOTO KAMU
+                                lstReviewsDisplay.Items.Add($"=== DETAIL BUKU ===");
+                                lstReviewsDisplay.Items.Add($"Judul   : {bookInfo.title}");
+                                lstReviewsDisplay.Items.Add($"Penulis : {bookInfo.author}");
+                                lstReviewsDisplay.Items.Add($"Tahun   : {bookInfo.year}");
+                                lstReviewsDisplay.Items.Add("=========================================================");
+                                lstReviewsDisplay.Items.Add("");
+
+                                // Tampilkan komentar ulasan yang sudah terfilter murni
+                                foreach (var r in filteredReviews)
+                                {
+                                    string username = r.username;
+                                    string comment = r.comment;
+                                    string dateStr = r.date;
+
+                                    if (DateTime.TryParse(dateStr, out DateTime parsedDate))
+                                    {
+                                        lstReviewsDisplay.Items.Add($"[{parsedDate.ToString("dd-MM-yyyy HH:mm")}] @{username} menulis:");
+                                    }
+                                    else
+                                    {
+                                        lstReviewsDisplay.Items.Add($"[@{username} menulis:]");
+                                    }
+
+                                    lstReviewsDisplay.Items.Add($"   > \"{comment}\"");
+                                    lstReviewsDisplay.Items.Add("");
+                                }
+
+                                lstReviewsDisplay.Items.Add(new string('-', 65));
+                                lstReviewsDisplay.Items.Add("");
+                            }
+                        }
                     }
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+
+                if (!totalReviewsFound)
                 {
-                    MessageBox.Show($"Buku dengan judul '{searchTitle}' tidak ditemukan di sistem!\n\nPastikan huruf kapital/kecil sudah benar (Case-Sensitive).",
-                                    "Buku Tidak Ditemukan (404)", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show("Terjadi kesalahan sistem saat menarik data dari backend.",
-                                    "Error (400)", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    lstReviewsDisplay.Items.Add("Buku ditemukan di katalog, tetapi belum memiliki ulasan yang sesuai.");
                 }
             }
             catch (Exception ex)
