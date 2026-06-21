@@ -1,7 +1,6 @@
 <Solution>
   <Project Path="eduLib.API/eduLib.API.csproj" Id="2bed0602-2c23-408d-b259-ffd51e97f04f" />
   <Project Path="eduLib.Application/eduLib.Application.csproj" />
-  <Project Path="eduLib.ConsoleDemo/eduLib.ConsoleDemo.csproj" Id="eb511742-b3f6-47d0-b4d5-bf95513d650f" />
   <Project Path="eduLib.Core/eduLib.Core.csproj" />
   <Project Path="eduLib.Infrastructure/eduLib.Infrastructure.csproj" />
   <Project Path="eduLib.Tests/eduLib.Tests.csproj" />

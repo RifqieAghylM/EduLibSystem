@@ -78,11 +78,10 @@ namespace eduLib.ConsoleDemo
         {
             // Data user (simulasi database user)
             var users = new List<User>
-            {
-                new User { Username = "admin",  Password = "admin123", UserRole = Role.Admin },
-                new User { Username = "siswa",  Password = "siswa123", UserRole = Role.Pelajar },
-                new User { Username = "guru",   Password = "guru123",  UserRole = Role.Guru }
-            };
+        {
+            new User { Username = "admin", Password = "admin123", UserRole = Role.Admin },
+            new User { Username = "user",  Password = "user123",  UserRole = Role.User  }
+        };
 
             _authService = new AuthService(users);
             _fileRepo = new FileRepository<Book>(50);
