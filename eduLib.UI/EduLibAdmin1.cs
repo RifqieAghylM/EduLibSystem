@@ -16,12 +16,9 @@ namespace eduLib.UI
     public partial class EduLibAdmin1 : Form
     {
         private const string BASE_URL = "https://localhost:7053/api/Books"; //konstanta untuk menyimpan URL dasar API
-
         private string selectedPdfPath = ""; // variabel untuk menyimpan path file PDF yang dipilih
-
         private bool isPdfChanged = false; // variaebl ini untuk menandakan apakah file pdf diganti saat mode edit
         private bool isEditMode = false; //menandakan form dalam mode upload atau edit
-
         private string currentBookId = ""; //menyimpan id buku yang sedang diedit
 
         //constructor upload buku
@@ -184,23 +181,17 @@ namespace eduLib.UI
         {
             using HttpClient client = new();
 
-            MultipartFormDataContent content = new();
-
-            CreateContent();
-
+            MultipartFormDataContent content = CreateContent();
 
             byte[] bytes =
                 File.ReadAllBytes(selectedPdfPath); // Membaca file PDF menjadi byte array
 
-
             ByteArrayContent pdf =
                 new ByteArrayContent(bytes); //mengubah byte array menjadi Byte array http content
-
 
             pdf.Headers.ContentType =
                 new MediaTypeHeaderValue(
                     "application/pdf");
-
 
             content.Add(
 
