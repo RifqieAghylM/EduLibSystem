@@ -1,3 +1,5 @@
+using System;
+
 
 namespace eduLib.UI
 {
@@ -9,6 +11,7 @@ namespace eduLib.UI
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
             System.Windows.Forms.Application.Run(new FormLogin());
+
         }
     }
 }
