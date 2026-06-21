@@ -1,4 +1,5 @@
-﻿using eduLib.Core.Entities;
+﻿using eduLib.Core;
+using eduLib.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,12 +8,13 @@ using System.Drawing;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Forms;
+using eduLib.Infrastructure.API;
 
 namespace eduLib.UI
 {
     public partial class KelolaAdmin : Form
     {
-        private const string BASE_URL = "https://localhost:7053/api/Books";
+        private readonly string BASE_URL = ApiHelper.GetBaseUrl(); //mengambil url dari config runtime di appsetting json
         public KelolaAdmin()
         {
             InitializeComponent();
@@ -33,117 +35,52 @@ namespace eduLib.UI
 
                 return;
             }
-
-
-            buttonCari.Enabled = false;
+            buttonCari.Enabled = false; // matikan tombol sementara menunggu hasil pencarian
             buttonCari.Text = "Mencari...";
 
 
             try
             {
+                string url = $"{BASE_URL}/search?keyword={keyword}";
 
-                using HttpClient client =
-                    new HttpClient();
-
-
-
-                var response =
-
-                await client.GetAsync($"{BASE_URL}/search?keyword={keyword}");
+                //IMPLEMENTASI PARAMETERIZATION / GENERICS
+                // Menggunakan method generic <Book> dari ApiHelper
+                List<Book> books = await ApiHelper.GetListAsync<Book>(url);
 
 
-
-                if (response.IsSuccessStatusCode)
+                if (books != null && books.Count > 0)
                 {
-
-                    string json = await response.Content.ReadAsStringAsync();
-
-
-
-                    var options = new JsonSerializerOptions();
-
-
-
-                    options.PropertyNameCaseInsensitive = true;
-
-
-
-                    List<Book> books =
-                        JsonSerializer.Deserialize<List<Book>>
-
-                        (
-
-                            json,
-
-                            options
-
-                        );
-
-
                     dataGridViewBuku.DataSource = null;
-
                     dataGridViewBuku.Columns.Clear();
+                    dataGridViewBuku.DataSource = books;
 
-
-
-                    dataGridViewBuku.DataSource =
-                        books;
-
-                    // hide column
-
+                    // Menyembunyikan kolom yang tidak perlu ditampilkan ke user
                     if (dataGridViewBuku.Columns["Id"] != null)
-
                         dataGridViewBuku.Columns["Id"].Visible = false;
-
-
-
                     if (dataGridViewBuku.Columns["PdfPath"] != null)
-
                         dataGridViewBuku.Columns["PdfPath"].Visible = false;
-
-
-
                     if (dataGridViewBuku.Columns["GridFsFileId"] != null)
-
                         dataGridViewBuku.Columns["GridFsFileId"].Visible = false;
 
-
                     AddButtonColumns();
-
-
                 }
-
                 else
                 {
-
-                    MessageBox.Show(
-
-                        "Gagal mengambil data"
-
-                    );
-
+                    MessageBox.Show("Data tidak ditemukan.");
+                    dataGridViewBuku.DataSource = null;
+                    dataGridViewBuku.Columns.Clear();
                 }
-
-
-
             }
-
             catch (Exception ex)
             {
-
-                MessageBox.Show(
-
-                    ex.Message
-
-                );
-
+                MessageBox.Show($"Terjadi kesalahan: {ex.Message}");
             }
-
-
-            buttonCari.Enabled = true;
-
-            buttonCari.Text = "Cari";
-
+            finally
+            {
+                // Clean Code: Nyalakan kembali tombol setelah selesai
+                buttonCari.Enabled = true;
+                buttonCari.Text = "Cari";
+            }
         }
         // Method untuk menambahkan kolom tombol "Edit" dan "Delete" ke DataGridView
         private void AddButtonColumns()
@@ -218,7 +155,8 @@ namespace eduLib.UI
 
 
                 frm.ShowDialog();
-
+                // Opsional: Otomatis mencari ulang setelah form edit ditutup agar data refresh
+                // buttonCari.PerformClick();
 
                 return;
 

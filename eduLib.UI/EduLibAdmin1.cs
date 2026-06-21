@@ -9,13 +9,15 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using eduLib.Core;
+using eduLib.Infrastructure.API;
 
 namespace eduLib.UI
 {
     
     public partial class EduLibAdmin1 : Form
     {
-        private const string BASE_URL = "https://localhost:7053/api/Books"; //konstanta untuk menyimpan URL dasar API
+        private readonly string BASE_URL = ApiHelper.GetBaseUrl(); //mengambiil url dari config runtime di appsetting json
         private string selectedPdfPath = ""; // variabel untuk menyimpan path file PDF yang dipilih
         private bool isPdfChanged = false; // variaebl ini untuk menandakan apakah file pdf diganti saat mode edit
         private bool isEditMode = false; //menandakan form dalam mode upload atau edit
@@ -194,7 +196,7 @@ namespace eduLib.UI
         private async Task UploadBookAsync()
         {
             using HttpClient client = new();
-
+            // PERBAIKAN BUG: Menangkap return value dari CreateContent()
             MultipartFormDataContent content = CreateContent();
 
             byte[] bytes =
@@ -325,6 +327,7 @@ namespace eduLib.UI
         {
             if (!ValidateForm())
                 return;
+            buttonUpload.Enabled = false; // matikan tombol 
             try
             {
                 if (isEditMode)
@@ -341,6 +344,11 @@ namespace eduLib.UI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+
+            finally
+            {
+                buttonUpload.Enabled = true; // hidupkan kembali tombol 
             }
         }
 
