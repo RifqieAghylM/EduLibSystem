@@ -18,36 +18,17 @@ namespace eduLib.UI
         private string _currentUserRole;
 
         // 2. Konstruktor menerima parameter role ("Admin" atau "User")
+        // Pastikan di file FormBookmark.cs bentuknya seperti ini:
         public FormBookmark(string userRole)
         {
             InitializeComponent();
-
-            // Simpan peran pengakses
             this._currentUserRole = userRole;
-
-            // 3. Pasang kabel pengikat elektronik untuk tombol Back agar aktif merespon
-            this.btnBackDashboard.Click += new System.EventHandler(this.btnBackDashboard_Click);
-
-            // Pengamanan lifecycle agar memori RAM bersih saat ditutup
             this.FormClosed += (s, args) => this.Dispose();
         }
 
         // 4. PERBAIKAN LOGIKA TOMBOL BACK DINAMIS (Bukan cuma Close lagi!)
         private void btnBackDashboard_Click(object sender, EventArgs e)
         {
-            if (this._currentUserRole != null && this._currentUserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                // Jika rolenya Admin, buka kembali Dashboard Admin
-                FormDashboardAdmin adminDashboard = new FormDashboardAdmin();
-                adminDashboard.Show();
-            }
-            else
-            {
-                // Jika rolenya User, buka kembali Dashboard User milik Azka
-                FormDashboardUser userDashboard = new FormDashboardUser();
-                userDashboard.Show();
-            }
-
             // Tutup halaman bookmark saat ini
             this.Close();
         }

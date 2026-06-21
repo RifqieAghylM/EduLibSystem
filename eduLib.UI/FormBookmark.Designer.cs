@@ -308,6 +308,7 @@
             btnBackDashboard.TabIndex = 8;
             btnBackDashboard.Text = "Back";
             btnBackDashboard.UseVisualStyleBackColor = true;
+            btnBackDashboard.Click += btnBackDashboard_Click;
             // 
             // FormBookmark
             // 
