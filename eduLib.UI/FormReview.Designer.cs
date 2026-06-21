@@ -44,11 +44,11 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Showcard Gothic", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(254, 30);
+            label1.Location = new Point(284, 31);
             label1.Name = "label1";
-            label1.Size = new Size(326, 37);
+            label1.Size = new Size(240, 37);
             label1.TabIndex = 0;
-            label1.Text = "TULIS REVIEWS BARU";
+            label1.Text = "REVIEWS BOOK";
             // 
             // label2
             // 

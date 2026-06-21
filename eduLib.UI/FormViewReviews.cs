@@ -11,7 +11,7 @@ namespace eduLib.UI
     {
         private readonly HttpClient _httpClient;
         private const string ApiBaseUrl = "https://localhost:7053/api/Books";
-
+        
         // Menampung referensi objek form pemanggil
         private readonly FormReview _formAsal;
 
@@ -27,7 +27,7 @@ namespace eduLib.UI
         public FormViewReviews(FormReview formAsal) : this()
         {
             _formAsal = formAsal;
-
+            
             // Mendaftarkan tombol back untuk navigasi pulang
             btnBack.Click += btnBack_Click;
         }
@@ -69,7 +69,7 @@ namespace eduLib.UI
 
             try
             {
-                // 1. Tembak endpoint katalog umum untuk mendapatkan daftar buku
+                // 1. Parameterization Tahap 1: Tembak endpoint /search milikmu untuk mencari buku secara fleksibel
                 string searchUrl = $"{ApiBaseUrl}/search?keyword={Uri.EscapeDataString(searchKeyword)}";
                 HttpResponseMessage searchResponse = await _httpClient.GetAsync(searchUrl);
 
@@ -82,6 +82,7 @@ namespace eduLib.UI
                 string searchJson = await searchResponse.Content.ReadAsStringAsync();
                 var foundBooks = JsonConvert.DeserializeObject<List<dynamic>>(searchJson);
 
+                // Jika kata kunci judul/penulis tidak menghasilkan buku apapun di katalog
                 if (foundBooks == null || foundBooks.Count == 0)
                 {
                     MessageBox.Show($"Buku atau Penulis dengan kata kunci '{searchKeyword}' tidak ditemukan di sistem!",
@@ -91,78 +92,63 @@ namespace eduLib.UI
 
                 bool totalReviewsFound = false;
 
-                // 2. Looping setiap buku yang ditemukan di katalog
+                // 2. Parameterization Tahap 2: Looping semua buku yang cocok (Bisa banyak buku jika mencari nama penulis)
                 foreach (var book in foundBooks)
                 {
-                    string currentTargetTitle = book.title;
+                    string bookTitle = book.title;
 
-                    // Ambil semua ulasan yang ditarik dari backend
-                    string reviewUrl = $"{ApiBaseUrl}/{Uri.EscapeDataString(currentTargetTitle)}/reviews";
+                    // Tembak endpoint ulasan asli berdasarkan judul buku yang didapatkan otomatis dari hasil search
+                    string reviewUrl = $"{ApiBaseUrl}/{bookTitle}/reviews";
                     HttpResponseMessage reviewResponse = await _httpClient.GetAsync(reviewUrl);
 
                     if (reviewResponse.IsSuccessStatusCode)
                     {
                         string reviewJson = await reviewResponse.Content.ReadAsStringAsync();
-                        var allReviews = JsonConvert.DeserializeObject<List<dynamic>>(reviewJson);
+                        var reviews = JsonConvert.DeserializeObject<List<dynamic>>(reviewJson);
 
-                        if (allReviews != null && allReviews.Count > 0)
+                        if (reviews != null && reviews.Count > 0)
                         {
-                            // FILTER KETAT (EXACT MATCH): Menyaring ulasan agar HANYA mengambil yang judulnya sama persis 
-                            // dengan target judul looping saat ini. Ini mencegah ulasan "kpl bisa 12" bocor ke "kpl bisa".
-                            var filteredReviews = new List<dynamic>();
-                            foreach (var r in allReviews)
+                            totalReviewsFound = true;
+                            var bookInfo = reviews[0].bookDetails;
+
+                            // FORMAT TAMPILAN PERSIS SEPERTI FOTO KAMU
+                            lstReviewsDisplay.Items.Add($"=== DETAIL BUKU ===");
+                            lstReviewsDisplay.Items.Add($"Judul   : {bookInfo.title}");
+                            lstReviewsDisplay.Items.Add($"Penulis : {bookInfo.author}");
+                            lstReviewsDisplay.Items.Add($"Tahun   : {bookInfo.year}");
+                            lstReviewsDisplay.Items.Add("=========================================================");
+                            lstReviewsDisplay.Items.Add("");
+
+                            foreach (var r in reviews)
                             {
-                                string reviewBookTitle = r.bookDetails?.title;
-                                if (reviewBookTitle != null && reviewBookTitle.Equals(currentTargetTitle, StringComparison.OrdinalIgnoreCase))
+                                string username = r.username;
+                                string comment = r.comment;
+                                string dateStr = r.date;
+
+                                if (DateTime.TryParse(dateStr, out DateTime parsedDate))
                                 {
-                                    filteredReviews.Add(r);
+                                    lstReviewsDisplay.Items.Add($"[{parsedDate.ToString("dd-MM-yyyy HH:mm")}] @{username} menulis:");
                                 }
-                            }
-
-                            // Jika setelah difilter ketat ulasannya ada, baru kita gambar ke ListBox
-                            if (filteredReviews.Count > 0)
-                            {
-                                totalReviewsFound = true;
-                                var bookInfo = filteredReviews[0].bookDetails;
-
-                                // FORMAT TAMPILAN SESUAI FOTO KAMU
-                                lstReviewsDisplay.Items.Add($"=== DETAIL BUKU ===");
-                                lstReviewsDisplay.Items.Add($"Judul   : {bookInfo.title}");
-                                lstReviewsDisplay.Items.Add($"Penulis : {bookInfo.author}");
-                                lstReviewsDisplay.Items.Add($"Tahun   : {bookInfo.year}");
-                                lstReviewsDisplay.Items.Add("=========================================================");
-                                lstReviewsDisplay.Items.Add("");
-
-                                // Tampilkan komentar ulasan yang sudah terfilter murni
-                                foreach (var r in filteredReviews)
+                                else
                                 {
-                                    string username = r.username;
-                                    string comment = r.comment;
-                                    string dateStr = r.date;
-
-                                    if (DateTime.TryParse(dateStr, out DateTime parsedDate))
-                                    {
-                                        lstReviewsDisplay.Items.Add($"[{parsedDate.ToString("dd-MM-yyyy HH:mm")}] @{username} menulis:");
-                                    }
-                                    else
-                                    {
-                                        lstReviewsDisplay.Items.Add($"[@{username} menulis:]");
-                                    }
-
-                                    lstReviewsDisplay.Items.Add($"   > \"{comment}\"");
-                                    lstReviewsDisplay.Items.Add("");
+                                    lstReviewsDisplay.Items.Add($"[@{username} menulis:]");
                                 }
 
-                                lstReviewsDisplay.Items.Add(new string('-', 65));
+                                lstReviewsDisplay.Items.Add($"   > \"{comment}\"");
                                 lstReviewsDisplay.Items.Add("");
                             }
+                            
+                            // Beri jarak pemisah ekstra jika penulis memiliki lebih dari 1 buku
+                            lstReviewsDisplay.Items.Add(new string('-', 65));
+                            lstReviewsDisplay.Items.Add("");
                         }
                     }
                 }
 
+                // Jika buku/penulisnya ada di katalog tapi belum ada yang pernah kasih review
                 if (!totalReviewsFound)
                 {
-                    lstReviewsDisplay.Items.Add("Buku ditemukan di katalog, tetapi belum memiliki ulasan yang sesuai.");
+                    lstReviewsDisplay.Items.Add("Buku ditemukan di katalog, tetapi belum memiliki ulasan.");
                 }
             }
             catch (Exception ex)
