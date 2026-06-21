@@ -27,28 +27,11 @@ namespace eduLib.UI
 
             // 3. Pasang kabel pengikat elektronik untuk tombol Back agar aktif merespon
             this.btnBackDashboard.Click += new System.EventHandler(this.btnBackDashboard_Click);
-
-            // Supaya saat form ditutup tidak mematikan seluruh engine aplikasi kelompok
-            this.FormClosed += (s, args) => this.Dispose();
         }
 
         // 4. BIKIN METHOD LOGIKA TOMBOL BACK DINAMIS
         private void btnBackDashboard_Click(object sender, EventArgs e)
         {
-            if (this._currentUserRole != null && this._currentUserRole.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                // Jika masuk sebagai Admin, balik ke Dashboard Admin
-                FormDashboardAdmin adminDashboard = new FormDashboardAdmin();
-                adminDashboard.Show();
-            }
-            else
-            {
-                // Jika masuk sebagai User biasa, balik ke Dashboard User milik Azka
-                FormDashboardUser userDashboard = new FormDashboardUser();
-                userDashboard.Show();
-            }
-
-            // Tutup halaman bookmark saat ini
             this.Close();
         }
 

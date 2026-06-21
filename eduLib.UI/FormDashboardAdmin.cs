@@ -42,6 +42,8 @@ namespace eduLib.UI
             // 1. Buat objek FormReview sambil melempar parameter role "Admin"
             FormReview reviewPage = new FormReview("Admin");
 
+            reviewPage.FormClosed += (s, args) => this.Show();
+
             // 2. Set posisi agar muncul di tengah layar
             reviewPage.StartPosition = FormStartPosition.CenterScreen;
 
@@ -56,6 +58,7 @@ namespace eduLib.UI
         {
             // Panggil FormBookmark dengan menyertakan parameter Admin
             FormBookmark bookmarkPage = new FormBookmark("Admin");
+            bookmarkPage.FormClosed += (s, args) => this.Show();
             bookmarkPage.StartPosition = FormStartPosition.CenterScreen;
             bookmarkPage.Show();
             this.Hide(); // Sembunyikan dashboard utama
