@@ -8,6 +8,7 @@ namespace eduLib.UI
         public FormDashboardAdmin()
         {
             InitializeComponent();
+            this.btnreview.Click += new System.EventHandler(this.btnreview_Click);
         }
 
         private void FormDashboard_Load(object sender, EventArgs e)
@@ -33,9 +34,21 @@ namespace eduLib.UI
             readDownloadPage.ShowDialog();
         }
 
+        // ── REVIEW ──
+        // ── REVIEW ──
         private void btnreview_Click(object sender, EventArgs e)
         {
+            // 1. Buat objek FormReview sambil melempar parameter role "Admin"
+            FormReview reviewPage = new FormReview("Admin");
 
+            // 2. Set posisi agar muncul di tengah layar
+            reviewPage.StartPosition = FormStartPosition.CenterScreen;
+
+            // 3. Tampilkan form review milikmu
+            reviewPage.Show();
+
+            // 4. Sembunyikan Dashboard Admin agar UI tidak menumpuk berantakan
+            this.Hide();
         }
 
         private void btnbookmark_Click(object sender, EventArgs e)

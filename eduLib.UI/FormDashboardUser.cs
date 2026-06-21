@@ -8,6 +8,7 @@ namespace eduLib.UI
         public FormDashboardUser()
         {
             InitializeComponent();
+            this.btnreview.Click += new System.EventHandler(this.btnreview_Click);
         }
 
         private void FormDashboard_Load(object sender, EventArgs e)
@@ -32,9 +33,21 @@ namespace eduLib.UI
    
         }
 
+        // ── HISTORY ──
+        private void btnhistory_Click(object sender, EventArgs e)
+        {
+            // TODO: History
+        }
+
         private void btnreview_Click(object sender, EventArgs e)
         {
-  
+            FormReview reviewPage = new FormReview("User");
+
+            reviewPage.StartPosition = FormStartPosition.CenterScreen;
+
+            reviewPage.Show();
+
+            this.Hide();
         }
 
         private void btnlogout_Click(object sender, EventArgs e)
