@@ -85,6 +85,7 @@
             btnbookmark.TabIndex = 7;
             btnbookmark.Text = "Bookmark";
             btnbookmark.UseVisualStyleBackColor = true;
+            btnbookmark.Click += btnbookmark_Click;
             // 
             // btnreview
             // 
@@ -94,6 +95,7 @@
             btnreview.TabIndex = 9;
             btnreview.Text = "Review";
             btnreview.UseVisualStyleBackColor = true;
+            btnreview.Click += btnreview_Click;
             // 
             // btnlogout
             // 
