@@ -69,7 +69,7 @@ namespace eduLib.UI
 
             try
             {
-                // 1. Tembak endpoint /search bawaan backend kamu untuk mencari daftar buku berdasarkan kata kunci
+                // 1. Tembak endpoint katalog umum untuk mendapatkan daftar buku
                 string searchUrl = $"{ApiBaseUrl}/search?keyword={Uri.EscapeDataString(searchKeyword)}";
                 HttpResponseMessage searchResponse = await _httpClient.GetAsync(searchUrl);
 
@@ -91,65 +91,78 @@ namespace eduLib.UI
 
                 bool totalReviewsFound = false;
 
-                // 2. Looping semua buku yang ditemukan (Misal: kpl bisa 12 dan kpl bisa)
+                // 2. Looping setiap buku yang ditemukan di katalog
                 foreach (var book in foundBooks)
                 {
-                    string bookTitle = book.title;
+                    string currentTargetTitle = book.title;
 
-                    // Tembak endpoint ulasan asli berdasarkan judul buku masing-masing hasil pencarian katalog
-                    string reviewUrl = $"{ApiBaseUrl}/{bookTitle}/reviews";
+                    // Ambil semua ulasan yang ditarik dari backend
+                    string reviewUrl = $"{ApiBaseUrl}/{Uri.EscapeDataString(currentTargetTitle)}/reviews";
                     HttpResponseMessage reviewResponse = await _httpClient.GetAsync(reviewUrl);
 
                     if (reviewResponse.IsSuccessStatusCode)
                     {
                         string reviewJson = await reviewResponse.Content.ReadAsStringAsync();
-                        var reviews = JsonConvert.DeserializeObject<List<dynamic>>(reviewJson);
+                        var allReviews = JsonConvert.DeserializeObject<List<dynamic>>(reviewJson);
 
-                        if (reviews != null && reviews.Count > 0)
+                        if (allReviews != null && allReviews.Count > 0)
                         {
-                            totalReviewsFound = true;
-
-                            // PERBAIKAN UTAMA: Ambil detail buku dari item perulangan ulasan saat ini (dinamis)
-                            var currentBookInfo = reviews[0].bookDetails;
-
-                            // Cetak detail buku yang sesuai dan akurat ke ListBox
-                            lstReviewsDisplay.Items.Add($"=== DETAIL BUKU ===");
-                            lstReviewsDisplay.Items.Add($"Judul   : {currentBookInfo.title}");
-                            lstReviewsDisplay.Items.Add($"Penulis : {currentBookInfo.author}");
-                            lstReviewsDisplay.Items.Add($"Tahun   : {currentBookInfo.year}");
-                            lstReviewsDisplay.Items.Add("=========================================================");
-                            lstReviewsDisplay.Items.Add("");
-
-                            // Tampilkan ulasan-ulasan milik buku tersebut
-                            foreach (var r in reviews)
+                            // FILTER KETAT (EXACT MATCH): Menyaring ulasan agar HANYA mengambil yang judulnya sama persis 
+                            // dengan target judul looping saat ini. Ini mencegah ulasan "kpl bisa 12" bocor ke "kpl bisa".
+                            var filteredReviews = new List<dynamic>();
+                            foreach (var r in allReviews)
                             {
-                                string username = r.username;
-                                string comment = r.comment;
-                                string dateStr = r.date;
-
-                                if (DateTime.TryParse(dateStr, out DateTime parsedDate))
+                                string reviewBookTitle = r.bookDetails?.title;
+                                if (reviewBookTitle != null && reviewBookTitle.Equals(currentTargetTitle, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    lstReviewsDisplay.Items.Add($"[{parsedDate.ToString("dd-MM-yyyy HH:mm")}] @{username} menulis:");
+                                    filteredReviews.Add(r);
                                 }
-                                else
-                                {
-                                    lstReviewsDisplay.Items.Add($"[@{username} menulis:]");
-                                }
-
-                                lstReviewsDisplay.Items.Add($"   > \"{comment}\"");
-                                lstReviewsDisplay.Items.Add("");
                             }
 
-                            // Garis pembatas antar buku agar tampilan rapi dan terpisah jelas
-                            lstReviewsDisplay.Items.Add(new string('-', 65));
-                            lstReviewsDisplay.Items.Add("");
+                            // Jika setelah difilter ketat ulasannya ada, baru kita gambar ke ListBox
+                            if (filteredReviews.Count > 0)
+                            {
+                                totalReviewsFound = true;
+                                var bookInfo = filteredReviews[0].bookDetails;
+
+                                // FORMAT TAMPILAN SESUAI FOTO KAMU
+                                lstReviewsDisplay.Items.Add($"=== DETAIL BUKU ===");
+                                lstReviewsDisplay.Items.Add($"Judul   : {bookInfo.title}");
+                                lstReviewsDisplay.Items.Add($"Penulis : {bookInfo.author}");
+                                lstReviewsDisplay.Items.Add($"Tahun   : {bookInfo.year}");
+                                lstReviewsDisplay.Items.Add("=========================================================");
+                                lstReviewsDisplay.Items.Add("");
+
+                                // Tampilkan komentar ulasan yang sudah terfilter murni
+                                foreach (var r in filteredReviews)
+                                {
+                                    string username = r.username;
+                                    string comment = r.comment;
+                                    string dateStr = r.date;
+
+                                    if (DateTime.TryParse(dateStr, out DateTime parsedDate))
+                                    {
+                                        lstReviewsDisplay.Items.Add($"[{parsedDate.ToString("dd-MM-yyyy HH:mm")}] @{username} menulis:");
+                                    }
+                                    else
+                                    {
+                                        lstReviewsDisplay.Items.Add($"[@{username} menulis:]");
+                                    }
+
+                                    lstReviewsDisplay.Items.Add($"   > \"{comment}\"");
+                                    lstReviewsDisplay.Items.Add("");
+                                }
+
+                                lstReviewsDisplay.Items.Add(new string('-', 65));
+                                lstReviewsDisplay.Items.Add("");
+                            }
                         }
                     }
                 }
 
                 if (!totalReviewsFound)
                 {
-                    lstReviewsDisplay.Items.Add("Buku ditemukan di katalog, tetapi belum memiliki ulasan.");
+                    lstReviewsDisplay.Items.Add("Buku ditemukan di katalog, tetapi belum memiliki ulasan yang sesuai.");
                 }
             }
             catch (Exception ex)
