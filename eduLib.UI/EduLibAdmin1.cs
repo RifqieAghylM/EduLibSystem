@@ -133,7 +133,7 @@ namespace eduLib.UI
 
                 if (file.Length > maxSize)
                 {
-                    MessageBox.Show("Ukuran PDF maksimal 50 MB.");
+                    MessageBox.Show("Ukuran PDF harus kurang dari 50 MB.");
                     return false;
                 }
             }
