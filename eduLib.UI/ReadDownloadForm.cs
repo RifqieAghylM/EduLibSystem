@@ -54,7 +54,7 @@ namespace eduLib.UI
             }
 
             btnSearch.Enabled = true;
-            btnSearch.Text = "Cari Buku";
+            btnSearch.Text = "Search";
         }
 
         private async void btnDownload_Click(object sender, EventArgs e)
@@ -124,6 +124,8 @@ namespace eduLib.UI
                     await File.WriteAllBytesAsync(tempFile, pdfBytes);
 
                     PdfViewerForm viewer = new PdfViewerForm(tempFile, selectedTitle);
+                    viewer.FormClosed += (s, args) => this.Show();
+                    this.Hide();
                     viewer.Show();
                 }
                 else
