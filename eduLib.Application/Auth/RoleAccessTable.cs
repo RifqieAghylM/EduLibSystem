@@ -13,7 +13,6 @@ namespace eduLib.Application.Auth
                     "Manage Book",
                     "Read And Download Book",
                     "Review",
-                    "History",
                     "Bookmark"
                 }
             },
@@ -22,7 +21,6 @@ namespace eduLib.Application.Auth
                 {
                     "Read And Download Book",
                     "Review",
-                    "History",
                     "Bookmark"
                 }
             }
