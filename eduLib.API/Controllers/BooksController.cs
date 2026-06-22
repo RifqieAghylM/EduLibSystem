@@ -17,7 +17,7 @@ namespace eduLib.API.Controllers
         public BooksController(IConfiguration config)
         {
             string mongoAtlasConnString = config.GetConnectionString("MongoAtlas"); // koneksi db
-             _repo = new MongoBookRepository(mongoAtlasConnString, "book");
+            _repo = new MongoBookRepository(mongoAtlasConnString, "book");
         }
         // fitur search
         [HttpGet("search")]
@@ -133,7 +133,7 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Buku beserta file PDF berhasil dihapus secara permanen." });
         }
 
-        // --- 1. MEMBUAT REVIEW (SANGAT SENSITIF KAPITAL - CASE SENSITIVE) ---
+        // --- 1. MEMBUAT REVIEW ---
         [HttpPost("review")]
         public async Task<IActionResult> AddReview([FromForm] string title, [FromForm] string username, [FromForm] string comment)
         {
@@ -173,7 +173,7 @@ namespace eduLib.API.Controllers
             return Ok(new { Message = "Review berhasil disimpan!", Data = newReview });
         }
 
-        // --- 2. MENAMPILKAN REVIEW (SANGAT SENSITIF KAPITAL - CASE SENSITIVE) ---
+        // --- 2. MENAMPILKAN REVIEW ---
         [HttpGet("{title}/reviews")]
         public async Task<IActionResult> GetBookReviews([FromRoute] string title)
         {
@@ -296,30 +296,7 @@ namespace eduLib.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromQuery] string username, [FromQuery] string password)
         {
-            // Dummy user list sesuai logic Azka
-            var users = new List<User>
-    {
-        new User
-        {
-            Username = "admin",
-            Password = "Admin123",
-            UserRole = Role.Admin
-        },
-        new User
-        {
-            Username = "guru",
-            Password = "Guru123",
-            UserRole = Role.Guru
-        },
-        new User
-        {
-            Username = "pelajar",
-            Password = "Pelajar123",
-            UserRole = Role.Pelajar
-        }
-    };
-
-            var auth = new AuthService(users);
+            var auth = new AuthService();
             try
             {
                 var user = auth.Login(username, password);
@@ -332,9 +309,13 @@ namespace eduLib.API.Controllers
                     Menu = auth.GetUserMenus(user)
                 });
             }
-            catch
+            catch (UnauthorizedAccessException)
             {
                 return Unauthorized("Username atau Password salah.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Forbid(ex.Message);
             }
         }
     }

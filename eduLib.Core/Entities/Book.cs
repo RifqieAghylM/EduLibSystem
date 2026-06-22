@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using eduLib.Core.Interfaces; 
 namespace eduLib.Core.Entities
 {
+    [BsonIgnoreExtraElements]
     public class Book : IEntity
     {
         [BsonId]

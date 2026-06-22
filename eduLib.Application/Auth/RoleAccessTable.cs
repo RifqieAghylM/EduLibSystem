@@ -7,9 +7,25 @@ namespace eduLib.Application.Auth
     {
         private static readonly Dictionary<Role, List<string>> _accessTable = new Dictionary<Role, List<string>>
         {
-            { Role.Admin, new List<string> { "Kelola File PDF", "Manajemen Akun", "Koleksi Buku" } },
-            { Role.Guru, new List<string> { "Koleksi Buku", "Materi Ajar Tambahan", "Riwayat Bacaan Siswa" } },
-            { Role.Pelajar, new List<string> { "Koleksi Buku", "Riwayat Bacaan", "Ulasan/Komentar" } }
+            {
+                Role.Admin, new List<string>
+                {
+                    "Manage Book",
+                    "Read And Download Book",
+                    "Review",
+                    "History",
+                    "Bookmark"
+                }
+            },
+            {
+                Role.User, new List<string>
+                {
+                    "Read And Download Book",
+                    "Review",
+                    "History",
+                    "Bookmark"
+                }
+            }
         };
 
         public static List<string> GetAccessibleMenus(Role role)
